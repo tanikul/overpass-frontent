@@ -51,7 +51,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
 const Users = React.lazy(() => import('./views/users/Users'));
 const User = React.lazy(() => import('./views/users/User'));
 const Overpasses = React.lazy(() => import('./views/overpass/Overpasses'));
-const MappingOverpass = React.lazy(() => import('./views/forms/mapping-overpass/MappingList'));
+const MappingOverpass = React.lazy(() => import('./views/mapping-overpass/MappingList'));
 const MappingOverpassAdd = React.lazy(() => import('./views/mapping-overpass/MappingForms'));
 const MappingOverpassEdit = React.lazy(() => import('./views/mapping-overpass/MappingForms'));
 const Maps = React.lazy(() => import('./views/maps/Maps'));

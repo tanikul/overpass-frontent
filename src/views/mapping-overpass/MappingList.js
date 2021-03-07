@@ -36,7 +36,7 @@ import { setLoginExpired } from "src/actions/authen";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "spinkit/spinkit.min.css";
-import { redirect } from "../../../actions/redirect";
+import { redirect } from "../../actions/redirect";
 import { getsearchGroupMappingOverpasses, getMappingOverPassAll, deleteMappingOverpasses } from "src/services/MappingService";
 import ls from 'local-storage'
 import { useHistory } from "react-router-dom";
