@@ -255,15 +255,15 @@ const UserAddEdit = (props) => {
             )}
             <CModalBody className="p-4">
               <CRow>
-                <CCol xs={12} className="mb-3 mt-2">
+                <CCol xs={12} md={4} lg={3}>
                   <h4>{(isEdit) ? "แก้ไขผู้ใช้งาน" : "เพิ่มผู้ใช้งาน"}</h4>
                 </CCol>
-                <CCol xs={12}>
+                <CCol>
                   <CFormGroup>
                     <CCol md="3">
                       <CLabel className="font-weight-bold">Username:</CLabel>
                     </CCol>
-                    <CCol xs={12} md={9}>
+                    <CCol xs={12} md={9} lg={3}>
                       <CInput
                         id="username"
                         name="username"
@@ -281,14 +281,14 @@ const UserAddEdit = (props) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Prefix:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="prefix"
@@ -310,14 +310,14 @@ const UserAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         First Name:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="firstName"
                         name="firstName"
@@ -332,14 +332,14 @@ const UserAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Last Name:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="lastName"
                         name="lastName"
@@ -356,14 +356,14 @@ const UserAddEdit = (props) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Email:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="email"
                         name="email"
@@ -378,14 +378,14 @@ const UserAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Line ID:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="lineId"
                         name="lineId"
@@ -400,14 +400,14 @@ const UserAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Mobile No:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <TextMask
                         placeholder=""
                         mask={[
@@ -440,14 +440,14 @@ const UserAddEdit = (props) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Role:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="role"
@@ -473,14 +473,14 @@ const UserAddEdit = (props) => {
                   </CFormGroup>
                 </CCol>
                 {(isEdit) &&
-                  <CCol xs={4}>
+                  <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Status:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="status"
@@ -505,14 +505,14 @@ const UserAddEdit = (props) => {
 
                 }
                 
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Group:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="groupId"

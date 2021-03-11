@@ -214,12 +214,12 @@ const Users = () => {
   return (
     <>
       <CRow>
-        <CCol xs={6} className="mb-3 d-flex align-items-center">
+        <CCol xs={6} md={6} sm={6} className="mb-3 d-flex align-items-center">
           <h2>ผู้ใช้งานระบบ</h2>
         </CCol>
         <CCol
-          xs={6}
-          className="d-block d-sm-flex align-items-center justify-content-end mb-4"
+          xs={6} md={6} sm={6} 
+          className="d-block d-sm-flex align-items-right justify-content-end mb-4"
         >
           <CButton color="primary" onClick={() => showModal("add")}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
@@ -228,16 +228,16 @@ const Users = () => {
         </CCol>
       </CRow>
       <CRow className="justify-content-center">
-        <CCol xs={12} md={12} xl={12}>
+        <CCol>
           <CCard>
             <CCardBody>
               <CRow>
-                <CCol xs={12} className="mb-3 font-weight-bold">
+                <CCol className="mb-3 font-weight-bold">
                   ค้นหา
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="username">Username:</CLabel>
                     <CInput
@@ -247,7 +247,7 @@ const Users = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="firstName">ชื่อ:</CLabel>
                     <CInput
@@ -257,7 +257,7 @@ const Users = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="lastName">นามสกุล:</CLabel>
                     <CInput
@@ -267,7 +267,7 @@ const Users = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="status">Status</CLabel>
                     <CSelect
@@ -286,7 +286,7 @@ const Users = () => {
                     </CSelect>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="role">Role:</CLabel>
                     <CSelect
@@ -310,7 +310,7 @@ const Users = () => {
                     </CSelect>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="email">Email:</CLabel>
                     <CInput
@@ -320,7 +320,7 @@ const Users = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="lineId">Line ID:</CLabel>
                     <CInput
@@ -330,7 +330,7 @@ const Users = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={6} lg={3}>
                   <CFormGroup>
                     <CLabel htmlFor="mobileNo">Mobile No:</CLabel>
                     <TextMask
@@ -355,7 +355,7 @@ const Users = () => {
                 </CCol>
               </CRow>
               <CCol
-                xs={12}
+                xs={12} md={12} lg={12}
                 className="mt-3 d-block d-sm-flex justify-content-end"
               >
                 <CFormGroup>
@@ -383,7 +383,7 @@ const Users = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xl={12}>
+        <CCol xs={12} md={12} lg={12}>
           <CCard>
             <CCardBody>
               <CDataTable

@@ -265,12 +265,12 @@ const OverpassAddEdit = (props) => {
             )}
             <CModalBody className="p-4">
               <CRow>
-                <CCol xs={6} className="mb-3 mt-2">
+                <CCol xs={6} md={6} lg={6} className="mb-3 mt-2">
                   <h4>{(isEdit) ? "แก้ไขสะพานลอย" : "เพิ่มสะพานลอย"}</h4>
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={6}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
                     <CCol md="3">
                       <CLabel className="font-weight-bold">ID:</CLabel>
@@ -291,14 +291,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         ชื่อสะพานลอย:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="name"
                         name="name"
@@ -313,16 +313,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs={8}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
                     <CCol xs={8}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         สถานที่:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="location"
                         name="location"
@@ -337,14 +335,16 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+              </CRow>
+              <CRow>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={4}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         จังหวัด:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="province"
@@ -369,17 +369,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                
-              </CRow>
-              <CRow>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
                     <CCol xs={6}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         อำเภอ/เขต:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="amphur"
@@ -404,14 +401,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         ตำบล/แขวง:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="district"
@@ -435,14 +432,16 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+              </CRow>
+              <CRow>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         รหัสไปรษณีย์:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="postcode"
                         name="postcode"
@@ -458,16 +457,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Latitude:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="latitude"
                         name="latitude"
@@ -482,14 +479,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         Longtitude:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="longtitude"
                         name="longtitude"
@@ -504,14 +501,16 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={4}>
+              </CRow>
+              <CRow>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         สถานะ:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="status"
@@ -533,16 +532,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-              </CRow>
-              <CRow>
-               <CCol xs={3}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         ประเภทหลอดไฟ:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CSelect
                         custom
                         name="lightBulbId"
@@ -564,14 +561,14 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={3}>
+                <CCol xs={12} md={4} lg={4}>
                   <CFormGroup>
-                    <CCol xs={12}>
+                    <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
                         จำนวนหลอด:
                       </CLabel>
                     </CCol>
-                    <CCol xs={12}>
+                    <CCol>
                       <CInput
                         id="lightBulbCnt"
                         name="lightBulbCnt"

@@ -215,7 +215,7 @@ const MappingList = () => {
   return (
     <>
       <CRow>
-        <CCol xs={6} className="mb-3 d-flex align-items-center">
+        <CCol xs={6} md={6} lg={6} className="mb-3 d-flex align-items-center">
           <h2>จับกลุ่มสะพานลอย</h2>
         </CCol>
         <CCol
@@ -229,16 +229,16 @@ const MappingList = () => {
         </CCol>
       </CRow>
       <CRow className="justify-content-center">
-        <CCol xs={12} md={12} xl={12}>
+        <CCol>
           <CCard>
             <CCardBody>
               <CRow>
-                <CCol xs={12} className="mb-3 font-weight-bold">
+                <CCol className="mb-3 font-weight-bold">
                   ค้นหา
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={12}>
+                <CCol>
                   <CFormGroup>
                     <CLabel htmlFor="province">ชื่อกลุ่ม</CLabel>
                     <CSelect
@@ -281,7 +281,7 @@ const MappingList = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xl={12}>
+        <CCol>
           <CCard>
             <CCardBody>
               <CDataTable

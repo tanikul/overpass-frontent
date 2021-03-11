@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Multiselect } from 'multiselect-react-dropdown';
+import React, { useState, useEffect, useRef } from "react";
+import { Multiselect } from "multiselect-react-dropdown";
 import {
   CButton,
   CCard,
@@ -33,16 +33,23 @@ import {
   CSwitch,
   CBadge,
   CDataTable,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { DocsLink } from 'src/reusable'
+} from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import { DocsLink } from "src/reusable";
 import { getUserByRole } from "src/services/UserService";
 import { USER_ROLE } from "src/config";
 import { useDispatch, useSelector } from "react-redux";
 import { capitalize } from "src/utils/common";
 import { getMappingAddress } from "src/services/CommonService";
-import { getOverpassesByCond, getOverpassesAll } from "src/services/OverpassService";
-import { insertMappingOverpasses, updateMappingOverpasses, getOverpassByGroupId } from "src/services/MappingService";
+import {
+  getOverpassesByCond,
+  getOverpassesAll,
+} from "src/services/OverpassService";
+import {
+  insertMappingOverpasses,
+  updateMappingOverpasses,
+  getOverpassByGroupId,
+} from "src/services/MappingService";
 import * as Yup from "yup";
 import { Formik, Field } from "formik";
 import Swal from "sweetalert2";
@@ -50,13 +57,13 @@ import withReactContent from "sweetalert2-react-content";
 import "spinkit/spinkit.min.css";
 import { Redirect } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import ls from 'local-storage'
+import ls from "local-storage";
 
 const MySwal = withReactContent(Swal);
 
 const MappingForms = ({ match, history }) => {
-  const [collapsed, setCollapsed] = React.useState(true)
-  const [showElements, setShowElements] = React.useState(true)
+  const [collapsed, setCollapsed] = React.useState(true);
+  const [showElements, setShowElements] = React.useState(true);
   const isAuth = useSelector((state) => state.authen.isAuth);
   const accessToken = useSelector((state) => state.authen.access_token);
   const [users, setUsers] = useState([]);
@@ -70,7 +77,7 @@ const MappingForms = ({ match, history }) => {
   const [selectedOverpass, setSelectedOverpass] = useState([]);
   const [selectedOverpassTmp, setSelectedOverpassTmp] = useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
-  
+
   const [overpassData, setOverpassData] = useState([]);
   const [options, setOptions] = useState([]);
   const formikRef = useRef();
@@ -82,11 +89,10 @@ const MappingForms = ({ match, history }) => {
   const [disableDraft, setDisableDraft] = useState(true);
   const [disableConfirm, setDisableConfirm] = useState(true);
   const multiselectRef = React.createRef();
-  const isEdit = (match.params.mode === 'edit') ? true : false;
+  const isEdit = match.params.mode === "edit" ? true : false;
   const [reload, setReload] = useState(false);
   const [checked, setChecked] = useState(false);
-  
-  
+
   const schema = () => {
     let schema = {
       groupName: Yup.string().required("Name is required!"),
@@ -101,76 +107,75 @@ const MappingForms = ({ match, history }) => {
       groupId: values.groupId,
       overpasses: selectedOverpass,
       groupName: values.groupName,
-      lineNotiToken: values.lineNotifyToken
+      lineNotiToken: values.lineNotifyToken,
     };
-    if(!isEdit){
+    if (!isEdit) {
       insertMappingOverpasses(accessToken, body)
-      .then((response) => {
-        if (response.status === 200) {
-          setLoading(false);
-          MySwal.fire({
-            title: "Success",
-            text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
-            icon: "success",
-            didClose: () => {
-              history.push("/mapping-overpass");
-            },
-          });
-        } else {
-          setLoading(false);
-          MySwal.fire({
-            title: "Failed",
-            text: response.data,
-            icon: "error",
-            didClose: () => {
-              
-            },
-          });
-        }
-      })
-      .then(() => {
-        
-      });
-    }else{
+        .then((response) => {
+          if (response.status === 200) {
+            setLoading(false);
+            MySwal.fire({
+              title: "Success",
+              text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
+              icon: "success",
+              didClose: () => {
+                history.push("/mapping-overpass");
+              },
+            });
+          } else {
+            setLoading(false);
+            MySwal.fire({
+              title: "Failed",
+              text: response.data,
+              icon: "error",
+              didClose: () => {},
+            });
+          }
+        })
+        .then(() => {});
+    } else {
       updateMappingOverpasses(accessToken, body)
-      .then((response) => {
-        if (response.status === 200) {
-          setLoading(false);
-          MySwal.fire({
-            title: "Success",
-            text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
-            icon: "success",
-            didClose: () => {
-              history.push("/mapping-overpass");
-            },
-          });
-        } else {
-          setLoading(false);
-          MySwal.fire({
-            title: "Failed",
-            text: response.data,
-            icon: "error",
-            didClose: () => {
-              //setModal(false);
-              //reloadData();
-            },
-          });
-        }
-      })
-      .then(() => {
-
-      });
+        .then((response) => {
+          if (response.status === 200) {
+            setLoading(false);
+            MySwal.fire({
+              title: "Success",
+              text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
+              icon: "success",
+              didClose: () => {
+                history.push("/mapping-overpass");
+              },
+            });
+          } else {
+            setLoading(false);
+            MySwal.fire({
+              title: "Failed",
+              text: response.data,
+              icon: "error",
+              didClose: () => {
+                //setModal(false);
+                //reloadData();
+              },
+            });
+          }
+        })
+        .then(() => {});
     }
-    
-  }
+  };
 
   const selectProvince = (e) => {
     let id = e.target.value;
     getOverpassesByCond(accessToken, id).then(({ status, data }) => {
-      return status === 200 ? setOptionsVal(data, "province") : setOptionsVal([], "province");
+      return status === 200
+        ? setOptionsVal(data, "province")
+        : setOptionsVal([], "province");
     });
-    
-    setAmphurs(provinces.find((val) => { return val.key == id }).amphur);
+
+    setAmphurs(
+      provinces.find((val) => {
+        return val.key == id;
+      }).amphur
+    );
     setDistricts([]);
     setProvince(id);
     setSelectedValue([]);
@@ -179,40 +184,51 @@ const MappingForms = ({ match, history }) => {
   const selectAmphur = (e) => {
     let id = e.target.value;
     getOverpassesByCond(accessToken, province, id).then(({ status, data }) => {
-      return status === 200 ? setOptionsVal(data, "amphur") : setOptionsVal([], "amphur");
+      return status === 200
+        ? setOptionsVal(data, "amphur")
+        : setOptionsVal([], "amphur");
     });
-    setDistricts(amphurs.find((val) => { return val.key == id }).district);
+    setDistricts(
+      amphurs.find((val) => {
+        return val.key == id;
+      }).district
+    );
     setAmphur(id);
   };
 
   const selectDistrict = (e) => {
     let id = e.target.value;
-    getOverpassesByCond(accessToken, province, amphur, id).then(({ status, data }) => {
-      return status === 200 ? setOptionsVal(data, "district") : setOptionsVal([], "district");
-    });
+    getOverpassesByCond(accessToken, province, amphur, id).then(
+      ({ status, data }) => {
+        return status === 200
+          ? setOptionsVal(data, "district")
+          : setOptionsVal([], "district");
+      }
+    );
     setDistrict(id);
   };
 
-  const onSelect = (selectedList, selectedItem) => {console.log(selectedItem);
+  const onSelect = (selectedList, selectedItem) => {
+    console.log(selectedItem);
     setSelectedOverpassTmp(Object.values(selectedList));
     setDisableDraft(false);
-  }
+  };
 
   const onRemove = (selectedList, removedItem) => {
     setSelectedOverpassTmp(Object.values(selectedList));
-    setDisableDraft((selectedList.length > 0) ? false : true);
-  }
+    setDisableDraft(selectedList.length > 0 ? false : true);
+  };
 
   const clickRemove = (id) => {
     let arr = [];
     selectedOverpass.forEach((item, i) => {
-      if(item.id !== id){
+      if (item.id !== id) {
         arr.push(Object.values(item));
       }
     });
     setSelectedOverpass(arr);
     setDisableConfirm(false);
-  }
+  };
 
   const clickDraft = () => {
     selectedOverpassTmp.forEach((item, i) => {
@@ -226,7 +242,7 @@ const MappingForms = ({ match, history }) => {
     setDistrict("");
     setDisableConfirm(false);
     setDisableDraft(true);
-  }
+  };
 
   const cancelDraft = () => {
     setProvince("");
@@ -238,10 +254,10 @@ const MappingForms = ({ match, history }) => {
     multiselectRef.current.resetSelectedValues();
     setDisableDraft(true);
     checkallOverpass.current.checked = false;
-  }
+  };
 
   const checkedAll = (e) => {
-    if(e.target.checked){
+    if (e.target.checked) {
       setProvince("");
       setAmphur("");
       setDistrict("");
@@ -257,7 +273,7 @@ const MappingForms = ({ match, history }) => {
       });
       setChecked(true);
       //checkallOverpass.current.disabled = true;
-    }else{
+    } else {
       selectProvinceRef.current.disabled = false;
       selectAmphurRef.current.disabled = false;
       selectDistrictRef.current.disabled = false;
@@ -266,7 +282,7 @@ const MappingForms = ({ match, history }) => {
       setChecked(false);
       setDisableDraft(true);
     }
-  }
+  };
 
   const setOptionsVal = (data, type) => {
     let arr = [];
@@ -276,17 +292,17 @@ const MappingForms = ({ match, history }) => {
       select.push(k.id);
     });
     let j = 0;
-    if(type === "province"){
+    if (type === "province") {
       data.forEach((val, i) => {
-        if(select.indexOf(val.id) === -1){
+        if (select.indexOf(val.id) === -1) {
           arr[j] = val;
           arr[j].cat = val.amphurName;
           j++;
         }
       });
-    }else if(type === "amphur" || type === "district" || type === ""){
+    } else if (type === "amphur" || type === "district" || type === "") {
       data.forEach((val, i) => {
-        if(select.indexOf(val.id) === -1){
+        if (select.indexOf(val.id) === -1) {
           arr[j] = val;
           arr[j] = { ...arr[j], cat: val.districtName };
           j++;
@@ -294,30 +310,37 @@ const MappingForms = ({ match, history }) => {
       });
     }
     setOptions(arr);
-  }
+  };
 
   useEffect(() => {
-    if(checked){
+    if (checked) {
       setSelectedValue(options);
       setSelectedOverpassTmp(options);
-    } 
+    }
   }, [options]);
 
   useEffect(() => {
-    if(provinces.length === 0){
+    if (provinces.length === 0) {
       getMappingAddress(accessToken).then(({ status, data }) => {
         return status === 200 ? setProvinces(data) : setProvinces([]);
       });
     }
     setSelectedOverpass([]);
-    if(isEdit){
-      getOverpassByGroupId(accessToken, match.params.id).then(({ status, data }) => {
-        formikRef.current.setFieldValue("groupName", data.groupName);
-        formikRef.current.setFieldValue("groupId", data.groupId);
-        formikRef.current.setFieldValue("lineNotifyToken", data.lineNotiToken);
-        
-        return status === 200 ? setSelectedOverpass(data.overpasses) : setSelectedOverpass([]);
-      });
+    if (isEdit) {
+      getOverpassByGroupId(accessToken, match.params.id).then(
+        ({ status, data }) => {
+          formikRef.current.setFieldValue("groupName", data.groupName);
+          formikRef.current.setFieldValue("groupId", data.groupId);
+          formikRef.current.setFieldValue(
+            "lineNotifyToken",
+            data.lineNotiToken
+          );
+
+          return status === 200
+            ? setSelectedOverpass(data.overpasses)
+            : setSelectedOverpass([]);
+        }
+      );
     }
     selectProvinceRef.current.disabled = false;
     selectAmphurRef.current.disabled = false;
@@ -325,13 +348,11 @@ const MappingForms = ({ match, history }) => {
     checkallOverpass.current.disabled = false;
   }, [reload]);
 
-  
-  
   return (
     <Formik
       innerRef={formikRef}
       enableReinitializing={true}
-      initialValues={{ 
+      initialValues={{
         groupId: 0,
         groupName: "",
         overpasses: {},
@@ -346,219 +367,278 @@ const MappingForms = ({ match, history }) => {
         handleChange,
         handleBlur,
         handleSubmit,
-      }) => 
-      (
-      <>
-      <CForm onSubmit={handleSubmit} noValidate name="addUserForm">
-      <CRow>
-        <CCol xs="9">
-          <CCard>
-            <CCardHeader>
-              <h5>จับกลุ่มสะพานลอย</h5>
-            </CCardHeader>
-            <CCardBody>
-              <CRow>
-                <CCol xs={12} >
-                  <CFormGroup>
-                    <CLabel htmlFor="groupName">ชื่อกลุ่ม</CLabel>
-                    
-                      <CInput
-                          id="groupName"
-                          name="groupName"
-                          valid={!!values.groupName}
-                          invalid={touched.groupName && !!errors.groupName}
-                          value={values.groupName}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          disabled={isEdit}
+      }) => (
+        <>
+          <CForm onSubmit={handleSubmit} noValidate name="addUserForm">
+            <CRow>
+              <CCol>
+                <CCard>
+                  <CCardHeader>
+                    <h5>จับกลุ่มสะพานลอย</h5>
+                  </CCardHeader>
+                  <CCardBody>
+                    <CRow>
+                      <CCol>
+                        <CFormGroup>
+                          <CLabel htmlFor="groupName">ชื่อกลุ่ม</CLabel>
+
+                          <CInput
+                            id="groupName"
+                            name="groupName"
+                            valid={!!values.groupName}
+                            invalid={touched.groupName && !!errors.groupName}
+                            value={values.groupName}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            disabled={isEdit}
+                          />
+                          <CInvalidFeedback>
+                            {errors.groupName}
+                          </CInvalidFeedback>
+                        </CFormGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol xs={12} md={4} lg={4}>
+                        <CFormGroup>
+                          <CLabel htmlFor="province">จังหวัด</CLabel>
+                          <CSelect
+                            custom
+                            name="province"
+                            id="province"
+                            onChange={selectProvince}
+                            value={province}
+                            innerRef={selectProvinceRef}
+                          >
+                            <option value="">-- Please Select --</option>
+                            {provinces.map((province) => (
+                              <option key={province.key} value={province.key}>
+                                {capitalize(province.value.toLowerCase())}
+                              </option>
+                            ))}
+                          </CSelect>
+                        </CFormGroup>
+                      </CCol>
+                      <CCol xs={12} md={4} lg={4}>
+                        <CFormGroup>
+                          <CLabel htmlFor="amphur">อำเภอ/เขค</CLabel>
+                          <CSelect
+                            custom
+                            name="amphur"
+                            id="amphur"
+                            value={amphur}
+                            onChange={selectAmphur}
+                            innerRef={selectAmphurRef}
+                          >
+                            <option value="">-- Please Select --</option>
+                            {amphurs.map((amphur) => (
+                              <option key={amphur.key} value={amphur.key}>
+                                {capitalize(amphur.value)}
+                              </option>
+                            ))}
+                          </CSelect>
+                        </CFormGroup>
+                      </CCol>
+                      <CCol xs={12} md={4} lg={4}>
+                        <CFormGroup>
+                          <CLabel htmlFor="district">ตำบล/แขวง</CLabel>
+                          <CSelect
+                            custom
+                            name="district"
+                            id="district"
+                            value={district}
+                            onChange={selectDistrict}
+                            innerRef={selectDistrictRef}
+                          >
+                            <option value="">-- Please Select --</option>
+                            {districts.map((district) => (
+                              <option key={district.key} value={district.key}>
+                                {capitalize(district.value)}
+                              </option>
+                            ))}
+                          </CSelect>
+                        </CFormGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CFormGroup>
+                          <CSwitch
+                            className="mr-1"
+                            color="success"
+                            id="checkallOverpass"
+                            defaultChecked={false}
+                            shape="pill"
+                            innerRef={checkallOverpass}
+                            onChange={(e) => {
+                              checkedAll(e);
+                            }}
+                          />
+                          <CLabel
+                            variant="checkbox"
+                            htmlFor="radio1"
+                            style={{ position: "absolute", marginLeft: "10px" }}
+                          >
+                            เลือกทั้งหมด
+                          </CLabel>
+                        </CFormGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CFormGroup>
+                          <CLabel htmlFor="id">สะพานลอย</CLabel>
+                          <Multiselect
+                            options={options} // Options to display in the dropdown
+                            selectedValues={selectedValue} // Preselected value to persist in dropdown
+                            onSelect={onSelect} // Function will trigger on select event
+                            onRemove={onRemove} // Function will trigger on remove event
+                            displayValue="name" // Property name to display in the dropdown options
+                            multiple={true}
+                            hidePlaceholder={true}
+                            groupBy="cat"
+                            closeOnSelect={false}
+                            showCheckbox={true}
+                            ref={multiselectRef}
+                          />
+                        </CFormGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CFormGroup>
+                          <CLabel htmlFor="lineNotifyToken">
+                            Line Notify Token
+                          </CLabel>
+
+                          <CInput
+                            id="lineNotifyToken"
+                            name="lineNotifyToken"
+                            valid={!!values.lineNotifyToken}
+                            invalid={
+                              touched.lineNotifyToken &&
+                              !!errors.lineNotifyToken
+                            }
+                            value={values.lineNotifyToken}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            disabled={isEdit}
+                          />
+                          <CInvalidFeedback>
+                            {errors.lineNotifyToken}
+                          </CInvalidFeedback>
+                        </CFormGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CButton
+                          type="button"
+                          className="btn-github btn-brand mr-1 mb-1 btn btn-xl"
+                          onClick={clickDraft}
+                          disabled={disableDraft}
+                        >
+                          Draft
+                        </CButton>
+                        <CButton
+                          type="button"
+                          className="btn btn-secondary mr-1 mb-1 btn-xl"
+                          onClick={cancelDraft}
+                        >
+                          Cancel
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol>
+                <CCard>
+                  <CCardBody>
+                    <CRow>
+                      <CCol xs="12">
+                        <CDataTable
+                          items={selectedOverpass}
+                          fields={[
+                            { key: "id", label: "ID", filter: false },
+                            {
+                              key: "name",
+                              label: "ชื่อสะพานลอย",
+                              filter: false,
+                            },
+                            {
+                              key: "location",
+                              label: "สถานที่",
+                              filter: false,
+                            },
+                            {
+                              key: "districtName",
+                              label: "แขวง/ตำบล",
+                              filter: false,
+                            },
+                            {
+                              key: "amphurName",
+                              label: "เขต/อำเภอ",
+                              filter: false,
+                            },
+                            {
+                              key: "provinceName",
+                              label: "จังหวัด",
+                              filter: false,
+                            },
+                            { key: "delete", label: "ลบ", filter: false },
+                          ]}
+                          scopedSlots={{
+                            delete: (item) => (
+                              <td>
+                                <CButton
+                                  size="sm"
+                                  className="btn-youtube btn-brand mr-1 mb-1"
+                                  onClick={() => clickRemove(item.id)}
+                                >
+                                  <CIcon size="sm" name="cil-trash" />
+                                </CButton>
+                              </td>
+                            ),
+                          }}
+                          bordered
+                          itemsPerPage={5}
+                          pagination
                         />
-                      <CInvalidFeedback>{errors.groupName}</CInvalidFeedback>
-                    </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-              <CCol xs={4}>
-                  <CFormGroup>
-                    <CLabel htmlFor="province">จังหวัด</CLabel>
-                    <CSelect
-                      custom
-                      name="province"
-                      id="province"
-                      onChange={selectProvince}
-                      value={province}
-                      innerRef={selectProvinceRef}
-                    >
-                      <option value="">-- Please Select --</option>
-                      {provinces.map((province) => (
-                        <option key={province.key} value={province.key}>
-                          {capitalize(province.value.toLowerCase())}
-                        </option>
-                      ))}
-                    </CSelect>
-                  </CFormGroup>
-                </CCol>
-                <CCol xs={4}>
-                  <CFormGroup>
-                    <CLabel htmlFor="amphur">อำเภอ/เขค</CLabel>
-                    <CSelect
-                      custom
-                      name="amphur"
-                      id="amphur"
-                      value={amphur}
-                      onChange={selectAmphur}
-                      innerRef={selectAmphurRef}
-                    >
-                      <option value="">-- Please Select --</option>
-                      {amphurs.map((amphur) => (
-                        <option key={amphur.key} value={amphur.key}>
-                          {capitalize(amphur.value)}
-                        </option>
-                      ))}
-                    </CSelect>
-                  </CFormGroup>
-                </CCol>
-                <CCol xs={4}>
-                  <CFormGroup>
-                    <CLabel htmlFor="district">ตำบล/แขวง</CLabel>
-                    <CSelect
-                      custom
-                      name="district"
-                      id="district"
-                      value={district}
-                      onChange={selectDistrict}
-                      innerRef={selectDistrictRef}
-                    >
-                      <option value="">-- Please Select --</option>
-                      {districts.map((district) => (
-                        <option key={district.key} value={district.key}>
-                          {capitalize(district.value)}
-                        </option>
-                      ))}
-                    </CSelect>
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol>
-                <CFormGroup>
-                <CSwitch
-                      className="mr-1"
-                      color="success"
-                      id="checkallOverpass"
-                      defaultChecked={false}
-                      shape="pill"
-                      innerRef={checkallOverpass}
-                      onChange={(e) => {
-                        checkedAll(e);
-                      }}
-                    />
-                      <CLabel variant="checkbox" htmlFor="radio1" style={{"position": "absolute", "marginLeft": "10px"}}>เลือกทั้งหมด</CLabel>
-                    </CFormGroup>
-                 
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="12">
-                  <CFormGroup>
-                    <CLabel htmlFor="id">สะพานลอย</CLabel>
-                    <Multiselect
-                      options={options} // Options to display in the dropdown
-                      selectedValues={selectedValue} // Preselected value to persist in dropdown
-                      onSelect={onSelect} // Function will trigger on select event
-                      onRemove={onRemove} // Function will trigger on remove event
-                      displayValue="name" // Property name to display in the dropdown options
-                      multiple={true}
-                      hidePlaceholder={true}
-                      groupBy="cat"
-                      closeOnSelect={false}
-                      showCheckbox={true}
-                      ref={multiselectRef}
-                      />
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs={12} >
-                  <CFormGroup>
-                    <CLabel htmlFor="lineNotifyToken">Line Notify Token</CLabel>
-                    
-                      <CInput
-                          id="lineNotifyToken"
-                          name="lineNotifyToken"
-                          valid={!!values.lineNotifyToken}
-                          invalid={touched.lineNotifyToken && !!errors.lineNotifyToken}
-                          value={values.lineNotifyToken}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          disabled={isEdit}
-                        />
-                      <CInvalidFeedback>{errors.lineNotifyToken}</CInvalidFeedback>
-                    </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="4">
-                  <CButton type="button" className="btn-github btn-brand mr-1 mb-1 btn btn-xl" onClick={clickDraft} disabled={disableDraft}>Draft</CButton>   
-                  <CButton type="button" className="btn btn-secondary mr-1 mb-1 btn-xl" onClick={cancelDraft} >Cancel</CButton>
-                </CCol>
-             </CRow>
-              
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <CRow>
-        <CCol xs="9">
-          <CCard>
-            <CCardBody>
-              <CRow>
-                <CCol xs="12">
-                  
-                  <CDataTable
-                    items={selectedOverpass}
-                    fields={[ 
-                      { key: 'id', label: 'ID', filter: false },
-                      { key: 'name', label: 'ชื่อสะพานลอย', filter: false },
-                      { key: 'location', label: 'สถานที่', filter: false },
-                      { key: 'districtName', label: 'แขวง/ตำบล', filter: false },
-                      { key: 'amphurName', label: 'เขต/อำเภอ', filter: false },
-                      { key: 'provinceName', label: 'จังหวัด', filter: false },
-                      { key: 'delete', label: 'ลบ', filter: false },
-                    ]}
-                    scopedSlots = {{
-                      'delete':
-                        (item)=>(
-                          <td>
-                            <CButton size="sm" className="btn-youtube btn-brand mr-1 mb-1" onClick={() => clickRemove(item.id)}><CIcon size="sm" name="cil-trash" /></CButton>
-                          </td>
-                        )
-      
-                    }}
-                    bordered
-                    itemsPerPage={5}
-                    pagination
-                
-                  />
-                
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="12">
-                  <CButton type="submit" className="mr-1 mb-1 btn btn-xl" color="primary" disabled={disableConfirm}>
-                    Confirm
-                  </CButton>
-                  <CButton type="button" className="btn btn-secondary mr-1 mb-1 btn-xl" onClick={() => { setReload((reload) ? false : true )}}>Cancel</CButton>
-                </CCol>
-              </CRow>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      </CForm>
-      </>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CButton
+                          type="submit"
+                          className="mr-1 mb-1 btn btn-xl"
+                          color="primary"
+                          disabled={disableConfirm}
+                        >
+                          Confirm
+                        </CButton>
+                        <CButton
+                          type="button"
+                          className="btn btn-secondary mr-1 mb-1 btn-xl"
+                          onClick={() => {
+                            setReload(reload ? false : true);
+                          }}
+                        >
+                          Cancel
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </CForm>
+        </>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default MappingForms
+export default MappingForms;

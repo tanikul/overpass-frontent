@@ -227,12 +227,11 @@ const Overpasses = () => {
   return (
     <>
       <CRow>
-        <CCol xs={6} className="mb-3 d-flex align-items-center">
+        <CCol xs={6} md={6} lg={6}>
           <h2>ข้อมูลสะพานลอย</h2>
         </CCol>
-        <CCol
-          xs={6}
-          className="d-block d-sm-flex align-items-center justify-content-end mb-4"
+        <CCol xs={6} md={6} lg={6}
+          className="d-block d-sm-flex align-items-right justify-content-end mb-4"
         >
           <CButton color="primary" onClick={() => showModal("add")}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
@@ -241,16 +240,16 @@ const Overpasses = () => {
         </CCol>
       </CRow>
       <CRow className="justify-content-center">
-        <CCol xs={12} md={12} xl={12}>
+        <CCol>
           <CCard>
             <CCardBody>
               <CRow>
-                <CCol xs={12} className="mb-3 font-weight-bold">
+                <CCol className="mb-3 font-weight-bold">
                   <h4>ค้นหา</h4>
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={3} lg={3} sm="12">
                   <CFormGroup>
                     <CLabel htmlFor="name">ชื่อสะพานลอย:</CLabel>
                     <CInput
@@ -260,7 +259,7 @@ const Overpasses = () => {
                     />
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={3} lg={3} sm="12">
                   <CFormGroup>
                     <CLabel htmlFor="province">จังหวัด</CLabel>
                     <CSelect
@@ -279,7 +278,7 @@ const Overpasses = () => {
                     </CSelect>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={3} lg={3} sm="12">
                   <CFormGroup>
                     <CLabel htmlFor="amphur">อำเภอ/เขต</CLabel>
                     <CSelect
@@ -298,7 +297,7 @@ const Overpasses = () => {
                     </CSelect>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={6} md={4} lg={3}>
+                <CCol xs={12} md={3} lg={3} sm="12">
                   <CFormGroup>
                     <CLabel htmlFor="district">ตำบล/แขวง</CLabel>
                     <CSelect
@@ -318,9 +317,7 @@ const Overpasses = () => {
                   </CFormGroup>
                 </CCol>
               </CRow>
-              <CCol
-                xs={12}
-                className="mt-3 d-block d-sm-flex justify-content-end"
+              <CCol className="mt-3 d-block d-sm-flex justify-content-end"
               >
                 <CFormGroup>
                   <CButton
@@ -347,7 +344,7 @@ const Overpasses = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xl={12}>
+        <CCol>
           <CCard>
             <CCardBody>
               <CDataTable

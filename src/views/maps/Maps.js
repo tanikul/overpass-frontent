@@ -62,10 +62,10 @@ const ReactGoogleMaps = () => {
   const [overpassDetails, setOverpassDetails] = useState([]);
 
   // local
-  //const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
+  const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
   
   // production
-  const apiKey = "AIzaSyANe0OjAC6ILZQGF9udm0BlN0QHW1JMMME";
+  //const apiKey = "AIzaSyANe0OjAC6ILZQGF9udm0BlN0QHW1JMMME";
 
   const [defaultCenter, setDefaultCenter] = useState({
     lat: parseFloat(13.8583),
@@ -291,7 +291,7 @@ const ReactGoogleMaps = () => {
 
   return (
     <CRow>
-      <CCol xs="9" sm="9" md="9">
+      <CCol xs="12" md="9" sm="12" className="mb-4">
         <CTabs activeTab="home">
           <CNav variant="tabs">
             <CNavItem>
@@ -317,7 +317,7 @@ const ReactGoogleMaps = () => {
           </CTabContent>
         </CTabs>
       </CCol>
-      <CCol xs="3" sm="3" md="3">
+      <CCol xs="12" sm="12" md="3">
         <CListGroup className={"margin-top"}>
           <CListGroupItem>
             <b className="float-left">ระบุตัวเลือกค้นหา</b>
