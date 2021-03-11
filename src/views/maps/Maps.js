@@ -60,7 +60,12 @@ const ReactGoogleMaps = () => {
   const [locations, setLocations] = useState([]);
   const [overpasses, setOverpasses] = useState([]);
   const [overpassDetails, setOverpassDetails] = useState([]);
-  const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
+
+  // local
+  //const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
+  
+  // production
+  const apiKey = "AIzaSyANe0OjAC6ILZQGF9udm0BlN0QHW1JMMME";
 
   const [defaultCenter, setDefaultCenter] = useState({
     lat: parseFloat(13.8583),
