@@ -99,14 +99,19 @@ window.broadcast = async () => {
 setSubscribeMessage();
 window.subscribe();
 */
-ReactDOM.render(
-  <React.StrictMode>
+ {/*<React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>
-  </React.StrictMode>,
+   </React.StrictMode>*/}
+ReactDOM.render(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>,
   document.getElementById("root")
 );
 

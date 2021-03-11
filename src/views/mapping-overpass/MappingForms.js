@@ -90,20 +90,19 @@ const MappingForms = ({ match, history }) => {
   const schema = () => {
     let schema = {
       groupName: Yup.string().required("Name is required!"),
+      lineNotifyToken: Yup.string().required("Name is required!"),
     };
 
     return Yup.object().shape(schema);
   };
 
   const handleAdd = (values) => {
-    console.log(values);
- 
     const body = {
       groupId: values.groupId,
       overpasses: selectedOverpass,
-      groupName: values.groupName
+      groupName: values.groupName,
+      lineNotiToken: values.lineNotifyToken
     };
-    console.log(body);
     if(!isEdit){
       insertMappingOverpasses(accessToken, body)
       .then((response) => {
@@ -257,7 +256,7 @@ const MappingForms = ({ match, history }) => {
         return status === 200 ? setOptionsVal(data, "") : setOptionsVal([], "");
       });
       setChecked(true);
-      checkallOverpass.current.disabled = true;
+      //checkallOverpass.current.disabled = true;
     }else{
       selectProvinceRef.current.disabled = false;
       selectAmphurRef.current.disabled = false;
@@ -315,6 +314,8 @@ const MappingForms = ({ match, history }) => {
       getOverpassByGroupId(accessToken, match.params.id).then(({ status, data }) => {
         formikRef.current.setFieldValue("groupName", data.groupName);
         formikRef.current.setFieldValue("groupId", data.groupId);
+        formikRef.current.setFieldValue("lineNotifyToken", data.lineNotiToken);
+        
         return status === 200 ? setSelectedOverpass(data.overpasses) : setSelectedOverpass([]);
       });
     }
@@ -345,7 +346,6 @@ const MappingForms = ({ match, history }) => {
         handleChange,
         handleBlur,
         handleSubmit,
-        handleReset
       }) => 
       (
       <>
@@ -354,15 +354,13 @@ const MappingForms = ({ match, history }) => {
         <CCol xs="9">
           <CCard>
             <CCardHeader>
-              Credit Card
-              <small> Form</small>
-              <DocsLink name="-Input"/>
+              <h5>จับกลุ่มสะพานลอย</h5>
             </CCardHeader>
             <CCardBody>
               <CRow>
                 <CCol xs={12} >
                   <CFormGroup>
-                    <CLabel htmlFor="groupName">Group Name</CLabel>
+                    <CLabel htmlFor="groupName">ชื่อกลุ่ม</CLabel>
                     
                       <CInput
                           id="groupName"
@@ -381,7 +379,7 @@ const MappingForms = ({ match, history }) => {
               <CRow>
               <CCol xs={4}>
                   <CFormGroup>
-                    <CLabel htmlFor="province">Province</CLabel>
+                    <CLabel htmlFor="province">จังหวัด</CLabel>
                     <CSelect
                       custom
                       name="province"
@@ -401,7 +399,7 @@ const MappingForms = ({ match, history }) => {
                 </CCol>
                 <CCol xs={4}>
                   <CFormGroup>
-                    <CLabel htmlFor="amphur">Amphur</CLabel>
+                    <CLabel htmlFor="amphur">อำเภอ/เขค</CLabel>
                     <CSelect
                       custom
                       name="amphur"
@@ -421,7 +419,7 @@ const MappingForms = ({ match, history }) => {
                 </CCol>
                 <CCol xs={4}>
                   <CFormGroup>
-                    <CLabel htmlFor="district">District</CLabel>
+                    <CLabel htmlFor="district">ตำบล/แขวง</CLabel>
                     <CSelect
                       custom
                       name="district"
@@ -480,6 +478,25 @@ const MappingForms = ({ match, history }) => {
                 </CCol>
               </CRow>
               <CRow>
+                <CCol xs={12} >
+                  <CFormGroup>
+                    <CLabel htmlFor="lineNotifyToken">Line Notify Token</CLabel>
+                    
+                      <CInput
+                          id="lineNotifyToken"
+                          name="lineNotifyToken"
+                          valid={!!values.lineNotifyToken}
+                          invalid={touched.lineNotifyToken && !!errors.lineNotifyToken}
+                          value={values.lineNotifyToken}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          disabled={isEdit}
+                        />
+                      <CInvalidFeedback>{errors.lineNotifyToken}</CInvalidFeedback>
+                    </CFormGroup>
+                </CCol>
+              </CRow>
+              <CRow>
                 <CCol xs="4">
                   <CButton type="button" className="btn-github btn-brand mr-1 mb-1 btn btn-xl" onClick={clickDraft} disabled={disableDraft}>Draft</CButton>   
                   <CButton type="button" className="btn btn-secondary mr-1 mb-1 btn-xl" onClick={cancelDraft} >Cancel</CButton>
@@ -501,7 +518,7 @@ const MappingForms = ({ match, history }) => {
                     items={selectedOverpass}
                     fields={[ 
                       { key: 'id', label: 'ID', filter: false },
-                      { key: 'name', label: 'ชื่อ', filter: false },
+                      { key: 'name', label: 'ชื่อสะพานลอย', filter: false },
                       { key: 'location', label: 'สถานที่', filter: false },
                       { key: 'districtName', label: 'แขวง/ตำบล', filter: false },
                       { key: 'amphurName', label: 'เขต/อำเภอ', filter: false },

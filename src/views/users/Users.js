@@ -89,7 +89,7 @@ const Users = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [userId, setUserId] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [sorterValue, setSorterValue] = useState();
+  const [sorterValue, setSorterValue] = useState({});
 
   const pageChange = (newPage) => {
     if (newPage - 1 >= 0 && page !== newPage - 1) {
@@ -201,6 +201,8 @@ const Users = () => {
       return status === 200 ? setPrefixes(data) : setPrefixes([]);
     });
     handleSearch();
+    console.log(sorterValue);
+    console.log(page + ', ' + itemsPerPage + ',' + sorterValue);
   }, [page, itemsPerPage, sorterValue]);
 
   if (!isAuth) {
@@ -208,12 +210,12 @@ const Users = () => {
   } else if (!['SUPER_ADMIN', 'ADMIN'].includes(userRole)) {
     return <Redirect to="/dashboard" />;
   }
-  
+
   return (
     <>
       <CRow>
         <CCol xs={6} className="mb-3 d-flex align-items-center">
-          <h2>Users</h2>
+          <h2>ผู้ใช้งานระบบ</h2>
         </CCol>
         <CCol
           xs={6}
@@ -221,7 +223,7 @@ const Users = () => {
         >
           <CButton color="primary" onClick={() => showModal("add")}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
-            Add User
+            เพิ่มผู้ใช้งาน
           </CButton>
         </CCol>
       </CRow>
@@ -231,7 +233,7 @@ const Users = () => {
             <CCardBody>
               <CRow>
                 <CCol xs={12} className="mb-3 font-weight-bold">
-                  SEARCH
+                  ค้นหา
                 </CCol>
               </CRow>
               <CRow>
@@ -240,7 +242,6 @@ const Users = () => {
                     <CLabel htmlFor="username">Username:</CLabel>
                     <CInput
                       id="username"
-                      placeholder="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                     />
@@ -248,10 +249,9 @@ const Users = () => {
                 </CCol>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="firstName">First Name:</CLabel>
+                    <CLabel htmlFor="firstName">ชื่อ:</CLabel>
                     <CInput
                       id="firstName"
-                      placeholder="first name"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                     />
@@ -259,10 +259,9 @@ const Users = () => {
                 </CCol>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="lastName">Last Name:</CLabel>
+                    <CLabel htmlFor="lastName">นามสกุล:</CLabel>
                     <CInput
                       id="lastName"
-                      placeholder="last name"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                     />
@@ -278,7 +277,7 @@ const Users = () => {
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
                     >
-                      <option value=""></option>
+                      <option value="">Please Select</option>
                       {statuses.map((status) => (
                         <option key={status.key} value={status.key}>
                           {capitalize(status.value.toLowerCase())}
@@ -297,11 +296,11 @@ const Users = () => {
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
                     >
-                      <option value=""></option>
-                      
+                      <option value="">Please Select</option>
+
                       {roles.map(
                         (role) =>
-                        
+
                           roleUserControl[userRole].includes(role.value) && (
                             <option key={role.key} value={role.key}>
                               {capitalize(role.value.toLowerCase())}
@@ -316,7 +315,6 @@ const Users = () => {
                     <CLabel htmlFor="email">Email:</CLabel>
                     <CInput
                       id="email"
-                      placeholder="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -327,7 +325,6 @@ const Users = () => {
                     <CLabel htmlFor="lineId">Line ID:</CLabel>
                     <CInput
                       id="lineId"
-                      placeholder="line id"
                       value={lineId}
                       onChange={(e) => setLineId(e.target.value)}
                     />
@@ -337,7 +334,6 @@ const Users = () => {
                   <CFormGroup>
                     <CLabel htmlFor="mobileNo">Mobile No:</CLabel>
                     <TextMask
-                      placeholder="mobile no"
                       mask={[
                         /[0]/,
                         /\d/,
@@ -394,15 +390,42 @@ const Users = () => {
                 loading={loading}
                 items={items}
                 fields={[
-                  "username",
-                  "prefix",
-                  "firstName",
-                  "lastName",
-                  "role",
-                  "status",
-                  "email",
-                  "lineId",
-                  "mobileNo",
+                  {
+                    key: 'username',
+                    label: 'Username',
+                  },
+                  {
+                    key: 'prefix',
+                    label: 'ชื่อนำหน้า',
+                  },
+                  {
+                    key: 'firstName',
+                    label: 'ชื่อ',
+                  },
+                  {
+                    key: 'lastName',
+                    label: 'นามสกุล',
+                  },
+                  {
+                    key: 'role',
+                    label: 'Role',
+                  },
+                  {
+                    key: 'status',
+                    label: 'Status',
+                  },
+                  {
+                    key: 'email',
+                    label: 'Email',
+                  },
+                  {
+                    key: 'lineId',
+                    label: 'Line ID',
+                  },
+                  {
+                    key: 'mobileNo',
+                    label: 'Mobile No',
+                  },
                   {
                     key: "action",
                     label: "",
@@ -432,7 +455,7 @@ const Users = () => {
                     item.lineId !== "null" ? <td>{item.lineId}</td> : "",
                   mobileNo: (item) =>
                     item.mobileNo !== "null" ? <td>{item.mobileNo}</td> : "",
-                  
+
                   action: (item) => (
                     <td className="py-2">
                       <CButtonGroup className="mr-2">
@@ -468,7 +491,7 @@ const Users = () => {
                 }}
                 sorter
                 sorterValue={sorterValue}
-                onSorterValueChange={setSorterValue}
+              //onSorterValueChange={setSorterValue}
               />
               <CRow>
                 <CCol xs={12} md={6}>

@@ -18,6 +18,24 @@ export const getOverpasses = async (token, body = {}) => {
   }
 };
 
+export const searchOverpassesByUserId = async (token, body = {}) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  const filter = body.filter;
+
+  try {
+    const request = await post(
+      "api/overpass/searchOverpassesByUserId",
+      body,
+      headers
+    );
+    return request;
+  } catch (err) {
+    return err.response.data;
+  }
+};
+
 export const getOverpassesAll = async (token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -104,6 +122,22 @@ export const deleteOverpass = async (token, id) => {
   try {
     const response = await post("api/overpass/delete", body, headers);
     return response;
+  } catch (err) {
+    return err.response.data;
+  }
+};
+
+export const getLightBulbAll = async (token) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const request = await get(
+      "api/overpass/getLightBulb", "",
+      headers
+    );
+    return request;
   } catch (err) {
     return err.response.data;
   }

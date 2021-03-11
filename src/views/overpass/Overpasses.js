@@ -74,7 +74,6 @@ const Overpasses = () => {
   const [statuses, setStatuses] = useState([]);
   const [province, setProvince] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
-  const [postcode, setPostcode] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [sorterValue, setSorterValue] = useState();
   const [itemDetail, setItemDetail] = useState({});
@@ -109,14 +108,10 @@ const Overpasses = () => {
   };
 
   const handleReset = () => {
-    /*setUsername("");
-    setFirstName("");
-    setLastName("");
-    setStatus("");
-    setRole("");
-    setEmail("");
-    setLineId("");
-    setMobileNo("");*/
+    setProvince("");
+    setAmphur("");
+    setDistrict("");
+    setName("");
   };
 
   const handleSearch = (e, reload = false) => {
@@ -233,7 +228,7 @@ const Overpasses = () => {
     <>
       <CRow>
         <CCol xs={6} className="mb-3 d-flex align-items-center">
-          <h2>Overpass</h2>
+          <h2>ข้อมูลสะพานลอย</h2>
         </CCol>
         <CCol
           xs={6}
@@ -241,7 +236,7 @@ const Overpasses = () => {
         >
           <CButton color="primary" onClick={() => showModal("add")}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
-            Add Overpass
+            เพิ่มสะพานลอย
           </CButton>
         </CCol>
       </CRow>
@@ -251,27 +246,15 @@ const Overpasses = () => {
             <CCardBody>
               <CRow>
                 <CCol xs={12} className="mb-3 font-weight-bold">
-                  SEARCH
+                  <h4>ค้นหา</h4>
                 </CCol>
               </CRow>
               <CRow>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="id">Id:</CLabel>
-                    <CInput
-                      id="id"
-                      placeholder="id"
-                      value={id}
-                      onChange={(e) => setId(e.target.value)}
-                    />
-                  </CFormGroup>
-                </CCol>
-                <CCol xs={6} md={4} lg={3}>
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Name:</CLabel>
+                    <CLabel htmlFor="name">ชื่อสะพานลอย:</CLabel>
                     <CInput
                       id="name"
-                      placeholder="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -279,7 +262,7 @@ const Overpasses = () => {
                 </CCol>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="province">Province</CLabel>
+                    <CLabel htmlFor="province">จังหวัด</CLabel>
                     <CSelect
                       custom
                       name="province"
@@ -287,7 +270,7 @@ const Overpasses = () => {
                       onChange={selectProvince}
                       value={province}
                     >
-                      <option value=""></option>
+                      <option value="">All</option>
                       {provinces.map((province) => (
                         <option key={province.key} value={province.key}>
                           {capitalize(province.value.toLowerCase())}
@@ -298,7 +281,7 @@ const Overpasses = () => {
                 </CCol>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="amphur">Amphur</CLabel>
+                    <CLabel htmlFor="amphur">อำเภอ/เขต</CLabel>
                     <CSelect
                       custom
                       name="amphur"
@@ -306,7 +289,7 @@ const Overpasses = () => {
                       value={amphur}
                       onChange={selectAmphur}
                     >
-                      <option value=""></option>
+                      <option value="">All</option>
                       {amphurs.map((amphur) => (
                         <option key={amphur.key} value={amphur.key}>
                           {capitalize(amphur.value)}
@@ -317,7 +300,7 @@ const Overpasses = () => {
                 </CCol>
                 <CCol xs={6} md={4} lg={3}>
                   <CFormGroup>
-                    <CLabel htmlFor="district">District</CLabel>
+                    <CLabel htmlFor="district">ตำบล/แขวง</CLabel>
                     <CSelect
                       custom
                       name="district"
@@ -325,7 +308,7 @@ const Overpasses = () => {
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
                     >
-                      <option value=""></option>
+                      <option value="">All</option>
                       {districts.map((district) => (
                         <option key={district.key} value={district.key}>
                           {capitalize(district.value)}
@@ -371,21 +354,41 @@ const Overpasses = () => {
                 loading={loading}
                 items={items}
                 fields={[
-                  "id",
-                  "name",
-                  "location",
-                  "districtName",
-                  "amphurName",
-                  "provinceName",
-                  "postcode",
+                  {
+                    key: 'id',
+                    label: 'ID',
+                  },
+                  {
+                    key: 'name',
+                    label: 'ชื่อสะพานลอย',
+                  },
+                  {
+                    key: 'location',
+                    label: 'สถานที่',
+                  },
+                  {
+                    key: 'districtName',
+                    label: 'ตำบล/แขวง',
+                  },
+                  {
+                    key: 'amphurName',
+                    label: 'อำเภอ/เขค',
+                  },
+                  {
+                    key: 'provinceName',
+                    label: 'จังหวัด',
+                  },
+                  {
+                    key: 'status',
+                    label: 'สถานะ',
+                  },
                   {
                     key: "action",
                     label: "",
                     _style: { width: "1%" },
                     filter: false,
                   },
-                ]
-                }
+                ]}
                 hover
                 itemsPerPage={itemsPerPage}
                 // clickableRows

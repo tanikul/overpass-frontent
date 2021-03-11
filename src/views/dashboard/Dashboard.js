@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useState } from "react";
+import Moment from 'react-moment';
 import {
   CBadge,
   CButton,
@@ -45,6 +46,7 @@ import socketIOClient from 'socket.io-client'
 import { useDispatch, useSelector } from "react-redux";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import { LOCALE, PROD_API_URL } from "../../config";
 
 const DeviceStatus = lazy(() => import("../../reusable/DeviceStatus"));
 const WidgetsDropdown = lazy(() => import("../widgets/WidgetsDropdown.js"));
@@ -53,80 +55,104 @@ const WidgetsBrand = lazy(() => import("../widgets/WidgetsBrand.js"));
 const Dashboard = () => {
 
   const accessToken = useSelector((state) => state.authen.access_token);
-  const [overpassAll, setOverpassAll] = useState(0);
-  const [overpassByZone, setOverpassByZone] = useState(0);
-  const [overpassOnByMonth, setOverpassOnByMonth] = useState({});
-  const [overpassOffByMonth, setOverpassOffByMonth] = useState({});
-  const [overpassOn, setOverpassOn] = useState(0);
-  const [overpassOff, setOverpassOff] = useState(0);
+  const [overpassData, setOverpassData] = useState({ });
+  const [graph, setGraph] = useState([]);
 
-
-  const send = () => {
+  const genDataSets = body => {console.log(body);
+    let data = [];
+    let chk = (graph.length === 0) ? true : false;
+    if(body !== []){
+      data[0] = (body.overpassOffByMonth.Jan === null) ? 0 : body.overpassOffByMonth.Jan;
+      data[1] = (body.overpassOffByMonth.Feb === null) ? 0 : body.overpassOffByMonth.Feb;
+      data[2] = (body.overpassOffByMonth.Mar === null) ? 0 : body.overpassOffByMonth.Mar;
+      data[3] = (body.overpassOffByMonth.Apr === null) ? 0 : body.overpassOffByMonth.Apr;
+      data[4] = (body.overpassOffByMonth.May === null) ? 0 : body.overpassOffByMonth.May;
+      data[5] = (body.overpassOffByMonth.Jan === null) ? 0 : body.overpassOffByMonth.Jun;
+      data[6] = (body.overpassOffByMonth.Jul === null) ? 0 : body.overpassOffByMonth.Jul;
+      data[7] = (body.overpassOffByMonth.Aug === null) ? 0 : body.overpassOffByMonth.Aug;
+      data[8] = (body.overpassOffByMonth.Sep === null) ? 0 : body.overpassOffByMonth.Sep;
+      data[9] = (body.overpassOffByMonth.Oct === null) ? 0 : body.overpassOffByMonth.Oct;
+      data[10] = (body.overpassOffByMonth.Nov === null) ? 0 : body.overpassOffByMonth.Nov;
+      data[11] = (body.overpassOffByMonth.Dec === null) ? 0 : body.overpassOffByMonth.Dec;
+      if(graph.length > 0){
+        data.forEach((item, i) => {console.log(graph.graphOff);
+          if(item !== graph.graphOff.data[i]) {
+            chk = true;
+          }
+        });
+      }
+    }
+    const graphOff = {
+      label: 'อุปกรณ์ไฟฟ้าดับ',
+      backgroundColor: '#c1d1dd',
+      data: data,
+      name: "graphOff"
+    }
     
-    const input = '';
-    const socket = socketIOClient(`http://localhost:5001`, {
-      path: '/zengcode-websocket',
-      origins: '*:*',
-      // transports: ['polling'],
-      transportOptions: {
-        polling: {
-            extraHeaders: {
-              'Authorization': `Bearer ${accessToken}`,
-            }
-        }
-        }
-    })
-    socket.emit('sent-message', input)
+    data = [];
+    if(body !== []){
+      data[0] = (body.overpassOnByMonth.Jan === null) ? 0 : body.overpassOnByMonth.Jan;
+      data[1] = (body.overpassOnByMonth.Feb === null) ? 0 : body.overpassOnByMonth.Feb;
+      data[2] = (body.overpassOnByMonth.Mar === null) ? 0 : body.overpassOnByMonth.Mar;
+      data[3] = (body.overpassOnByMonth.Apr === null) ? 0 : body.overpassOnByMonth.Apr;
+      data[4] = (body.overpassOnByMonth.May === null) ? 0 : body.overpassOnByMonth.May;
+      data[5] = (body.overpassOnByMonth.Jan === null) ? 0 : body.overpassOnByMonth.Jun;
+      data[6] = (body.overpassOnByMonth.Jul === null) ? 0 : body.overpassOnByMonth.Jul;
+      data[7] = (body.overpassOnByMonth.Aug === null) ? 0 : body.overpassOnByMonth.Aug;
+      data[8] = (body.overpassOnByMonth.Sep === null) ? 0 : body.overpassOnByMonth.Sep;
+      data[9] = (body.overpassOnByMonth.Oct === null) ? 0 : body.overpassOnByMonth.Oct;
+      data[10] = (body.overpassOnByMonth.Nov === null) ? 0 : body.overpassOnByMonth.Nov;
+      data[11] = (body.overpassOnByMonth.Dec === null) ? 0 : body.overpassOnByMonth.Dec;
+      if(graph.length > 0){
+        data.forEach((item, i) => {
+          if(item !== graph.graphOn.data[i]){
+            chk = true;
+          } 
+        });
+      }
+    }
+    const graphOn = {
+      label: 'อุปกรณ์ไฟฟ้าติด',
+      backgroundColor: '#1b97f7',
+      data: data,
+      name: "graphOff"
+    }
+    if(chk){
+      setGraph([
+          graphOff,
+          graphOn
+        ]);
+    }
   }
-  const getData = foodItems => {
-    console.log(foodItems);
-  };
 
-  // รอรับข้อมูลเมื่อ server มีการ update
-  const response = () => {
-    const endpoint = "http://localhost:5001/topic/greetings";
-    const message = [];
-    const temp = message
-    const socket = socketIOClient(`http://localhost:5001`, {
-      path: '/topic/greetings',
-      origins: '*:*',
-      // transports: ['polling'],
-      transportOptions: {
-        polling: {
-            extraHeaders: {
-              'Authorization': `Bearer ${accessToken}`,
-            }
-        }
-        }
-    })
-    socket.on("disconnect", () => {
-      console.log("Client disconnected");
-    });
-    socket.on("FromAPI", getData);
-   /* socket.on('get_data', (messageNew) => {
-      //temp.push(messageNew);
-      console.log(messageNew);
-    })*/
-  }
   useEffect(() => {
-    /*var thisheaders={
-      'Authorization': `Bearer ${accessToken}`,
-      
-  };
-    var sock = new SockJS('http://localhost:5001/websocket');
+    var thisheaders={
+      'Authorization': `Bearer ${accessToken}`,  
+    };
+    var sock = new SockJS(`${PROD_API_URL}/websocket`);
     let stompClient = Stomp.over(sock);
     sock.onopen = function() {
       console.log('open');
     }
     
     stompClient.connect(thisheaders, function (frame) {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/greetings', function (greeting) {
-        console.log(greeting);
-        //you can execute any function here
+      //console.log('Connected: ' + frame);
+      stompClient.subscribe('/topic/greetings', function (data) {
+        
+        if(data !== null){
+          console.log(data);
+          const obj = JSON.parse(JSON.stringify(data));
+          let body = JSON.parse(JSON.stringify(obj.body));
+          body = JSON.parse(body);
+          setOverpassData(body);
+          genDataSets(body);
+        }else{
+          setOverpassData([]);
+          genDataSets([]);
+        }
       });
-    });*/
-  });
+    });
+  }, []);
 
   return (
     <>
@@ -135,44 +161,62 @@ const Dashboard = () => {
         <CCol xs="3" sm="3" md="3">
           <CCard>
             <CCardBody>
-              <center><h1>1</h1></center>
+              <center><h1>{("overpassByZone" in overpassData) ? overpassData.overpassByZone.cnt : 0}</h1></center>
               <center className="text-warning">เขตพื้นที่ติดตั้งอุปกรณ์</center>
             </CCardBody>
             <CCardFooter className="bg-warning text-white">
-              <center>10 มกราคม 2564 11:47</center>
+              <center>
+                <Moment format="DD/MM/YYYY HH:mm:ss">
+                  {("overpassByZone" in overpassData && overpassData.overpassByZone.update_dt !== null) ? overpassData.overpassByZone.update_dt : new Date()}
+                </Moment>
+              </center>
+
+              
             </CCardFooter>
           </CCard>
         </CCol>
         <CCol xs="3" sm="3" md="3">
           <CCard>
             <CCardBody>
-              <center><h1>1</h1></center>
+              <center><h1>{("overpassAll" in overpassData) ? overpassData.overpassAll.cnt : 0}</h1></center>
               <center className="text-info">รวมอุปกรณ์ไฟฟ้าทั้งหมด</center>
             </CCardBody>
             <CCardFooter className="bg-warning text-white">
-              <center>10 มกราคม 2564 11:47</center>
+              <center>
+                <Moment format="DD/MM/YYYY HH:mm:ss">
+                {("overpassAll" in overpassData && overpassData.overpassAll.effective_date  !== null) ? overpassData.overpassAll.effective_date : new Date()}
+                </Moment>
+              </center>
             </CCardFooter>
           </CCard>
         </CCol>
         <CCol xs="3" sm="3" md="3">
           <CCard>
             <CCardBody>
-              <center><h1>1</h1></center>
+              <center><h1>{("overpassOn" in overpassData) ? overpassData.overpassOn.cnt : 0}</h1></center>
               <center className="text-success">อุปกรณ์หลอดไฟฟ้าติด</center>
             </CCardBody>
             <CCardFooter className="bg-warning text-white">
-              <center>10 มกราคม 2564 11:47</center>
+              <center>
+                <Moment format="DD/MM/YYYY HH:mm:ss">
+                  {("overpassOn" in overpassData && overpassData.overpassOn.effective_date !== null) ? overpassData.overpassOn.effective_date : new Date()}
+                </Moment>
+              </center>
             </CCardFooter>
           </CCard>
         </CCol>
         <CCol xs="3" sm="3" md="3">
           <CCard>
             <CCardBody>
-              <center><h1>1</h1></center>
+              <center><h1>{("overpassOff" in overpassData) ? overpassData.overpassOff.cnt : 0}</h1></center>
               <center className="text-danger">อุปกรณ์หลอดไฟฟ้าดับ</center>
             </CCardBody>
             <CCardFooter className="bg-secondary text-white">
-              <center>10 มกราคม 2564 11:47</center>
+              <center>
+                <Moment format="DD/MM/YYYY HH:mm:ss">
+                  {("overpassOff" in overpassData && overpassData.overpassOff.effective_date !== null) ? overpassData.overpassOff.effective_date : new Date()}
+                </Moment>
+              </center>
             </CCardFooter>
           </CCard>
         </CCol>
@@ -182,10 +226,6 @@ const Dashboard = () => {
         <CCard>
           <CCardBody>
               <CCard>
-                <CCardHeader>
-                  Navs
-                  <small> tabs</small>
-                </CCardHeader>
                 <CCardBody>
                 <CTabs activeTab="home">
                 <CNav variant="tabs">
@@ -205,18 +245,7 @@ const Dashboard = () => {
                     <CRow>
                   <CCol xs="8" sm="8" md="8">
                   <CChartBar
-                    datasets={[
-                      {
-                        label: 'อุปกรณ์ไฟฟ้าติด',
-                        backgroundColor: '#f87979',
-                        data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-                      },
-                      {
-                        label: 'อุปกรณ์ไฟฟ้าดับ',
-                        backgroundColor: '#f87979',
-                        data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-                      }
-                    ]}
+                    datasets={graph}
                     labels="months"
                     options={{
                       tooltips: {

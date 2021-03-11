@@ -18,7 +18,7 @@ const _nav = [
   },
   {
     _tag: "CSidebarNavItem",
-    name: "Reports",
+    name: "รายงาน",
     to: "/theme/colors",
     icon: "cil-chart-pie",
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
@@ -31,21 +31,21 @@ const _nav = [
   },
   {
     _tag: "CSidebarNavItem",
-    name: "Users",
+    name: "จัดการผู้ใช้งานระบบ",
     to: "/users",
     icon: "cil-people",
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
   {
     _tag: 'CSidebarNavItem',
-    name: 'Add Overpass',
+    name: 'จัดการสะพานลอย',
     to: '/overpass',
     icon: 'cil-notes',
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
   {
     _tag: "CSidebarNavItem",
-    name: "Mapping",
+    name: "จับกลุ่มสะพานลอย",
     to: "/mapping-overpass",
     icon: "cil-people",
     roles: ['SUPER_ADMIN', 'ADMIN']

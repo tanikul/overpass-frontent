@@ -177,9 +177,12 @@ const UserAddEdit = (props) => {
   };
 
   useEffect(() => {
-    getMappingOverPassAll(accessToken).then(({ status, data }) => {
-      return status === 200 ? setGroupList(data) : setGroupList([]);
-    });
+    if(groupList.length === 0){
+      getMappingOverPassAll(accessToken).then(({ status, data }) => {
+        return status === 200 ? setGroupList(data) : setGroupList([]);
+      });
+    }
+    
     formikRef.current.resetForm();
     if(isEdit){
       

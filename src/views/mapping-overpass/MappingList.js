@@ -195,21 +195,6 @@ const MappingList = () => {
   if (!isAuth) {
     return <Redirect to="/" />;
   } 
-  const fields = [
-    { key: 'groupName', _style: { width: '89%'} },
-    {
-      key: 'show_details',
-      label: '',
-      _style: { width: '1%' },
-      filter: false
-    },
-    {
-      key: 'edit',
-      label: '',
-      _style: { width: '10%' },
-      filter: false
-    }
-  ]
 
   const getoAdd = () => {
     dispatch(redirect("/mapping-overpass/add"));
@@ -231,7 +216,7 @@ const MappingList = () => {
     <>
       <CRow>
         <CCol xs={6} className="mb-3 d-flex align-items-center">
-          <h2>Overpass</h2>
+          <h2>จับกลุ่มสะพานลอย</h2>
         </CCol>
         <CCol
           xs={6}
@@ -239,8 +224,8 @@ const MappingList = () => {
         >
           <CButton color="primary" onClick={() => getoAdd()}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
-            Add Overpass
-          </CButton>
+            เพิ่มกลุ่มสะพานลอย 
+            </CButton>
         </CCol>
       </CRow>
       <CRow className="justify-content-center">
@@ -249,13 +234,13 @@ const MappingList = () => {
             <CCardBody>
               <CRow>
                 <CCol xs={12} className="mb-3 font-weight-bold">
-                  SEARCH
+                  ค้นหา
                 </CCol>
               </CRow>
               <CRow>
                 <CCol xs={12}>
                   <CFormGroup>
-                    <CLabel htmlFor="province">Group Name</CLabel>
+                    <CLabel htmlFor="province">ชื่อกลุ่ม</CLabel>
                     <CSelect
                       custom
                       name="group"
@@ -302,7 +287,23 @@ const MappingList = () => {
               <CDataTable
                 loading={loading}
                 items={items}
-                fields={fields}
+                fields={[
+                  { key: 'groupName', 
+                    _style: { width: '89%'}, 
+                    label: 'ชื่อกลุ่ม'
+                  },
+                  {
+                    key: 'show_details',
+                    label: '',
+                    _style: { width: '1%' },
+                    filter: false
+                  },
+                  {
+                    key: 'edit',
+                    label: '',
+                    _style: { width: '10%' },
+                    filter: false
+                  }]}
                 scopedSlots = {{
                   'show_details':
                     item => {
@@ -362,12 +363,13 @@ const MappingList = () => {
                           <CCardBody>
                             <CDataTable
                               items={item.overpasses}
-                              fields={[
-                                { key: 'id' },
-                                { key: 'location' },
-                                { key: 'districtName' },
-                                { key: 'amphurName' },
-                                { key: 'provinceName' }
+                              fields={[ 
+                                { key: 'id', label: 'ID', filter: false },
+                                { key: 'name', label: 'ชื่อสะพานลอย', filter: false },
+                                { key: 'location', label: 'สถานที่', filter: false },
+                                { key: 'districtName', label: 'แขวง/ตำบล', filter: false },
+                                { key: 'amphurName', label: 'เขต/อำเภอ', filter: false },
+                                { key: 'provinceName', label: 'จังหวัด', filter: false },
                               ]}
                               >
                             </CDataTable>

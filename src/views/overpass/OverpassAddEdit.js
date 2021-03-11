@@ -14,7 +14,7 @@ import {
   CInvalidFeedback,
 } from "@coreui/react";
 import { TextMask, InputAdapter } from "react-text-mask-hoc";
-import { addOverpass, editOverpass } from "src/services/OverpassService";
+import { addOverpass, editOverpass, getLightBulbAll } from "src/services/OverpassService";
 import { useSelector } from "react-redux";
 
 import Swal from "sweetalert2";
@@ -39,11 +39,11 @@ const OverpassAddEdit = (props) => {
 
   const formikRef = useRef();
   const isEdit = action === "add" ? false : true;
-  const checkId = (itemDetail.id && isEdit) ? itemDetail.id : "";
   const accessToken = useSelector((state) => state.authen.access_token);
   const [loading, setLoading] = useState(false);
   const [amphurs, setAmphurs] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [lightBulbs, setLightBulbs] = useState([]);
 
   const addUserSchema = () => {
     let schema = {
@@ -57,7 +57,9 @@ const OverpassAddEdit = (props) => {
       latitude: Yup.string().required("Latitude is required!"),
       longtitude: Yup.string().required("Longtitude is required!"),
       setpointWatt: Yup.string().required("Setpoint Watt is required!"),
-      status: Yup.string().required("Status is required!")
+      status: Yup.string().required("Status is required!"),
+      lightBulbId: Yup.string().required("ระบุประเภทหลอดไฟ"),
+      lightBulbCnt: Yup.string().required("ระบุจำนวนลอดไฟ"),
     };
 
     return Yup.object().shape(schema);
@@ -96,9 +98,10 @@ const OverpassAddEdit = (props) => {
       province,
       latitude,
       longtitude,
-      setpointWatt,
       postcode,
-      status
+      status,
+      lightBulbId,
+      lightBulbCnt
     } = values;
 
     let body = {
@@ -111,8 +114,9 @@ const OverpassAddEdit = (props) => {
       postcode,
       latitude,
       longtitude,
-      setpointWatt,
-      status
+      status,
+      lightBulbId,
+      lightBulbCnt
     };
     
     if(isEdit){
@@ -122,7 +126,7 @@ const OverpassAddEdit = (props) => {
           setLoading(false);
           MySwal.fire({
             title: "Success",
-            text: "Add Overpass information successfully  ",
+            text: "แก้ไขสะพานลอยสำเร็จ  ",
             icon: "success",
             didClose: () => {
               setModal(false);
@@ -152,7 +156,7 @@ const OverpassAddEdit = (props) => {
           setLoading(false);
           MySwal.fire({
             title: "Success",
-            text: "Add Overpass information successfully  ",
+            text: "เพิ่มสะพานลอยสำเร็จ  ",
             icon: "success",
             didClose: () => {
               setModal(false);
@@ -179,6 +183,9 @@ const OverpassAddEdit = (props) => {
   };
   useEffect(() => {
     formikRef.current.resetForm();
+    getLightBulbAll(accessToken).then(({ status, data }) => {
+      return status === 200 ? setLightBulbs(data) : setLightBulbs([]);
+    });
     if(isEdit){
       if(itemDetail.province){
         let a = provinces.find((val) => { return val.key == itemDetail.province });
@@ -188,16 +195,19 @@ const OverpassAddEdit = (props) => {
           setDistricts(d.district);
         }
       }
-     formikRef.current.setFieldValue("id", itemDetail.id);
-     formikRef.current.setFieldValue("name", itemDetail.name);
-     formikRef.current.setFieldValue("setpointWatt", itemDetail.setpointWatt);
-     formikRef.current.setFieldValue("latitude", itemDetail.latitude);
-     formikRef.current.setFieldValue("longtitude", itemDetail.longtitude);
-     formikRef.current.setFieldValue("district", itemDetail.district);
-     formikRef.current.setFieldValue("amphur", itemDetail.amphur);
-     formikRef.current.setFieldValue("province", itemDetail.province);
-     formikRef.current.setFieldValue("postcode", itemDetail.postcode);
-     formikRef.current.setFieldValue("location", itemDetail.location);
+      formikRef.current.setFieldValue("id", itemDetail.id);
+      formikRef.current.setFieldValue("name", itemDetail.name);
+      formikRef.current.setFieldValue("setpointWatt", itemDetail.setpointWatt);
+      formikRef.current.setFieldValue("latitude", itemDetail.latitude);
+      formikRef.current.setFieldValue("longtitude", itemDetail.longtitude);
+      formikRef.current.setFieldValue("district", itemDetail.district);
+      formikRef.current.setFieldValue("amphur", itemDetail.amphur);
+      formikRef.current.setFieldValue("province", itemDetail.province);
+      formikRef.current.setFieldValue("postcode", itemDetail.postcode);
+      formikRef.current.setFieldValue("location", itemDetail.location);
+      formikRef.current.setFieldValue("status", itemDetail.status);
+      formikRef.current.setFieldValue("lightBulbId", itemDetail.lightBulbId);
+      formikRef.current.setFieldValue("lightBulbCnt", itemDetail.lightBulbCnt);
     }
   }, [itemDetail, isEdit]);
   
@@ -216,7 +226,9 @@ const OverpassAddEdit = (props) => {
         amphur: "",
         province: "",
         postcode: "",
-        status: ""
+        status: "",
+        lightBulbId: "",
+        lightBulbCnt: 0,
       }}
       validationSchema={addUserSchema}
       onSubmit={handleAdd}
@@ -283,7 +295,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Name:
+                        ชื่อสะพานลอย:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -307,7 +319,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={8}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Location:
+                        สถานที่:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -329,7 +341,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={4}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Province:
+                        จังหวัด:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -364,7 +376,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={6}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Amphur:
+                        อำเภอ/เขต:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -396,7 +408,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        District:
+                        ตำบล/แขวง:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -427,7 +439,7 @@ const OverpassAddEdit = (props) => {
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Post code:
+                        รหัสไปรษณีย์:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -448,7 +460,7 @@ const OverpassAddEdit = (props) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol xs={3}>
+                <CCol xs={4}>
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
@@ -470,7 +482,7 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={3}>
+                <CCol xs={4}>
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
@@ -492,33 +504,11 @@ const OverpassAddEdit = (props) => {
                     </CCol>
                   </CFormGroup>
                 </CCol>
-                <CCol xs={3}>
+                <CCol xs={4}>
                   <CFormGroup>
                     <CCol xs={12}>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Setpoint watt:
-                      </CLabel>
-                    </CCol>
-                    <CCol xs={12}>
-                      <CInput
-                        id="setpointWatt"
-                        name="setpointWatt"
-                        valid={!!values.setpointWatt}
-                        invalid={touched.setpointWatt && !!errors.setpointWatt}
-                        placeholder=""
-                        value={values.setpointWatt}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                      <CInvalidFeedback>{errors.setpointWatt}</CInvalidFeedback>
-                    </CCol>
-                  </CFormGroup>
-                </CCol>
-                <CCol xs={3}>
-                  <CFormGroup>
-                    <CCol xs={12}>
-                      <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Status:
+                        สถานะ:
                       </CLabel>
                     </CCol>
                     <CCol xs={12}>
@@ -540,6 +530,59 @@ const OverpassAddEdit = (props) => {
                         ))}
                       </CSelect>
                       <CInvalidFeedback>{errors.status}</CInvalidFeedback>
+                    </CCol>
+                  </CFormGroup>
+                </CCol>
+              </CRow>
+              <CRow>
+               <CCol xs={3}>
+                  <CFormGroup>
+                    <CCol xs={12}>
+                      <CLabel className="font-weight-bold" htmlFor="text-input">
+                        ประเภทหลอดไฟ:
+                      </CLabel>
+                    </CCol>
+                    <CCol xs={12}>
+                      <CSelect
+                        custom
+                        name="lightBulbId"
+                        id="lightBulbId"
+                        valid={!!values.lightBulbId}
+                        invalid={touched.lightBulbId && !!errors.lightBulbId}
+                        value={values.lightBulbId}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        <option value="">Please select</option>
+                        {lightBulbs.map((light) => (
+                          <option key={light.id} value={light.id}>
+                            {light.lightName}
+                          </option>
+                        ))}
+                      </CSelect>
+                      <CInvalidFeedback>{errors.lightBulbId}</CInvalidFeedback>
+                    </CCol>
+                  </CFormGroup>
+                </CCol>
+                <CCol xs={3}>
+                  <CFormGroup>
+                    <CCol xs={12}>
+                      <CLabel className="font-weight-bold" htmlFor="text-input">
+                        จำนวนหลอด:
+                      </CLabel>
+                    </CCol>
+                    <CCol xs={12}>
+                      <CInput
+                        id="lightBulbCnt"
+                        name="lightBulbCnt"
+                        valid={!!values.lightBulbCnt}
+                        invalid={touched.lightBulbCnt && !!errors.lightBulbCnt}
+                        placeholder=""
+                        value={values.lightBulbCnt}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      <CInvalidFeedback>{errors.lightBulbCnt}</CInvalidFeedback>
                     </CCol>
                   </CFormGroup>
                 </CCol>
