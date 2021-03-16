@@ -50,8 +50,6 @@ import {
   getDataOverpass,
   send
 } from "src/services/DashboardService";
-import 
-  Notification from "src/views/notification/Notification";
 
 const DeviceStatus = lazy(() => import("../../reusable/DeviceStatus"));
 const WidgetsDropdown = lazy(() => import("../widgets/WidgetsDropdown.js"));
