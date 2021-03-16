@@ -24,6 +24,13 @@ const _nav = [
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
   },
   {
+    _tag: "CSidebarNavItem",
+    name: "รายการแจ้งซ่อม",
+    to: "/theme/colors",
+    icon: "cil-chart-pie",
+    roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
+  },
+  {
     _tag: "CSidebarNavTitle",
     name: "Administrator",
     _children: ["Administrator"],

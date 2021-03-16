@@ -181,13 +181,13 @@ const Login = () => {
                         >
                           {isSubmitting ? "Signing In..." : "Sign In"}
                         </CButton>
-                        <div className="d-flex justify-content-center">
+                        {/*<div className="d-flex justify-content-center">
                           <Link to="/reset-password">
                             <CButton className="px-0 text-black-50 text-decoration-none shadow-none">
                               Forgot Password?
                             </CButton>
                           </Link>
-                        </div>
+                      </div>*/}
                       </CForm>
                     )}
                   </Formik>

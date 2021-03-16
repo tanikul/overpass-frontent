@@ -17,12 +17,14 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
 
     const accessToken = response.data.access_token;
     const role = JSON.parse(atob(accessToken.split(".")[1])).role;
+    const overpassGroup = JSON.parse(atob(accessToken.split(".")[1])).overpassGroup;
 
     dispatch({
       type: LOGIN_SUCCESS,
       payload: {
         ...response.data,
         role,
+        overpassGroup,
       },
     });
     dispatch(redirect("/dashboard"));

@@ -46,6 +46,12 @@ import { useDispatch, useSelector } from "react-redux";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { LOCALE, PROD_API_URL } from "../../config";
+import {
+  getDataOverpass,
+  send
+} from "src/services/DashboardService";
+import 
+  Notification from "src/views/notification/Notification";
 
 const DeviceStatus = lazy(() => import("../../reusable/DeviceStatus"));
 const WidgetsDropdown = lazy(() => import("../widgets/WidgetsDropdown.js"));
@@ -53,9 +59,10 @@ const WidgetsBrand = lazy(() => import("../widgets/WidgetsBrand.js"));
 
 const Dashboard = () => {
   const accessToken = useSelector((state) => state.authen.access_token);
+  const overpassGroup = useSelector((state) => state.authen.overpassGroup);
   const [overpassData, setOverpassData] = useState({});
   const [graph, setGraph] = useState([]);
-
+  
   const genDataSets = (body) => {
     console.log(body);
     let data = [];
@@ -86,8 +93,10 @@ const Dashboard = () => {
       data[11] =
         body.overpassOffByMonth.Dec === null ? 0 : body.overpassOffByMonth.Dec;
       if (graph.length > 0) {
+        console.log('xxx');
+        console.log(data);
         data.forEach((item, i) => {
-          console.log(graph.graphOff);
+          console.log(graph);
           if (item !== graph.graphOff.data[i]) {
             chk = true;
           }
@@ -96,7 +105,7 @@ const Dashboard = () => {
     }
     const graphOff = {
       label: "อุปกรณ์ไฟฟ้าดับ",
-      backgroundColor: "#c1d1dd",
+      backgroundColor: "#e55353",
       data: data,
       name: "graphOff",
     };
@@ -137,9 +146,9 @@ const Dashboard = () => {
     }
     const graphOn = {
       label: "อุปกรณ์ไฟฟ้าติด",
-      backgroundColor: "#1b97f7",
+      backgroundColor: "#58ACFA",
       data: data,
-      name: "graphOff",
+      name: "graphOn",
     };
     if (chk) {
       setGraph([graphOff, graphOn]);
@@ -147,6 +156,17 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+console.log('overpassGroup ' + overpassGroup);
+    //console.log(send());
+    
+   // Notification();
+    getDataOverpass(accessToken).then(({ status, data }) => {
+      if(status === 200){
+        setOverpassData(data);
+        genDataSets(data);  
+      }
+    });
+
     var thisheaders = {
       Authorization: `Bearer ${accessToken}`,
     };
@@ -176,7 +196,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <h3 className="mb-4">Device Activity</h3>
+      <h3 className="mb-4">แผนงานวิเคราะห์ข้อมูล</h3>
       <CRow>
         <CCol xs="12" sm="6" md="3">
           <CCard>
@@ -188,9 +208,9 @@ const Dashboard = () => {
                     : 0}
                 </h1>
               </center>
-              <center className="text-warning">เขตพื้นที่ติดตั้งอุปกรณ์</center>
+              <center><b>เขตพื้นที่ติดตั้งอุปกรณ์</b></center>
             </CCardBody>
-            <CCardFooter className="bg-warning text-white">
+            <CCardFooter className="bg-secondary text-black">
               <center>
                 <Moment format="DD/MM/YYYY HH:mm:ss">
                   {"overpassByZone" in overpassData &&
@@ -212,9 +232,9 @@ const Dashboard = () => {
                     : 0}
                 </h1>
               </center>
-              <center className="text-info">รวมอุปกรณ์ไฟฟ้าทั้งหมด</center>
+              <center className="text-info"><b>รวมอุปกรณ์ไฟฟ้าทั้งหมด</b></center>
             </CCardBody>
-            <CCardFooter className="bg-warning text-white">
+            <CCardFooter className="bg-info text-white">
               <center>
                 <Moment format="DD/MM/YYYY HH:mm:ss">
                   {"overpassAll" in overpassData &&
@@ -236,9 +256,9 @@ const Dashboard = () => {
                     : 0}
                 </h1>
               </center>
-              <center className="text-success">อุปกรณ์หลอดไฟฟ้าติด</center>
+              <center className="text-success"><b>อุปกรณ์หลอดไฟฟ้าติด</b></center>
             </CCardBody>
-            <CCardFooter className="bg-warning text-white">
+            <CCardFooter className="bg-success">
               <center>
                 <Moment format="DD/MM/YYYY HH:mm:ss">
                   {"overpassOn" in overpassData &&
@@ -260,9 +280,9 @@ const Dashboard = () => {
                     : 0}
                 </h1>
               </center>
-              <center className="text-danger">อุปกรณ์หลอดไฟฟ้าดับ</center>
+              <center className="text-danger"><b>อุปกรณ์หลอดไฟฟ้าดับ</b></center>
             </CCardBody>
-            <CCardFooter className="bg-secondary text-white">
+            <CCardFooter className="bg-danger text-white">
               <center>
                 <Moment format="DD/MM/YYYY HH:mm:ss">
                   {"overpassOff" in overpassData &&
@@ -276,7 +296,7 @@ const Dashboard = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xs="12" md="12" sm="12" className="mb-4">
+        <CCol xs="12" md="9" sm="12" className="mb-4">
           <CCard>
             <CCardBody>
               <CCard>
@@ -297,7 +317,7 @@ const Dashboard = () => {
                     <CTabContent>
                       <CTabPane data-tab="home">
                         <CRow>
-                          <CCol xs="12" md="9" sm="12" className="mb-4">
+                          <CCol>
                             <CChartBar
                               datasets={graph}
                               labels="months"
@@ -308,60 +328,80 @@ const Dashboard = () => {
                               }}
                             />
                           </CCol>
-                          <CCol xs="12" sm="12" md="3">
-                            <CListGroup>
-                              <CListGroupItem>
-                                <b className={"float-left"}>Top Referrals</b>
-                                <b className="float-right">
-                                  <CLink
-                                    href="https://coreui.io"
-                                    target="_blank"
-                                  >
-                                    View Report
-                                  </CLink>
-                                </b>
-                              </CListGroupItem>
-                              <CListGroupItem>
-                                <span className="float-left">
-                                  หัวเรื่อง/แหล่งที่มา
-                                </span>
-                                <span className="float-right">จำนวน</span>
-                              </CListGroupItem>
-                              <CListGroupItem>
-                                <span className="float-left">
-                                  อุปกรณ์ไฟฟ้าติดสูงสุด
-                                </span>
-                                <span className="float-right">2 จุด</span>
-                              </CListGroupItem>
-                              <CListGroupItem>
-                                <span className="float-left">
-                                  อุปกรณ์ไฟฟ้าดับสูงสุด
-                                </span>
-                                <span className="float-right">2 จุด</span>
-                              </CListGroupItem>
-                              <CListGroupItem>
-                                <span className="float-left">
-                                  อุปกรณ์ไฟฟ้าเสียร้อยละ
-                                </span>
-                                <span className="float-right">2 จุด</span>
-                              </CListGroupItem>
-                              <CListGroupItem>
-                                <span className="float-left">
-                                  แจ้งเตือนข้อมูลสะสม
-                                </span>
-                                <span className="float-right">จำนวน</span>
-                              </CListGroupItem>
-                            </CListGroup>
-                          </CCol>
                         </CRow>
                       </CTabPane>
-                      <CTabPane data-tab="profile">456</CTabPane>
+                      <CTabPane data-tab="profile">
+                        <CChartDoughnut
+                          datasets={[
+                            {
+                              backgroundColor: [
+                                '#41B883',
+                                '#E46651',
+                                '#00D8FF',
+                                '#DD1B16'
+                              ],
+                              data: [40, 20, 80, 10]
+                            }
+                          ]}
+                          labels={['VueJs', 'EmberJs', 'ReactJs', 'AngularJs']}
+                          options={{
+                            tooltips: {
+                              enabled: true
+                            }
+                          }}
+                        />
+                      </CTabPane>
                     </CTabContent>
                   </CTabs>
                 </CCardBody>
               </CCard>
             </CCardBody>
           </CCard>
+        </CCol>
+        <CCol xs="12" md="3" sm="3">
+          <CListGroup>
+            <CListGroupItem>
+              <b className={"float-left"}>Top Referrals</b>
+              <b className="float-right">
+                <CLink
+                  href="https://coreui.io"
+                  target="_blank"
+                >
+                  View Report
+                </CLink>
+              </b>
+            </CListGroupItem>
+            <CListGroupItem>
+              <span className="float-left">
+                หัวเรื่อง/แหล่งที่มา
+              </span>
+              <span className="float-right">จำนวน</span>
+            </CListGroupItem>
+            <CListGroupItem>
+              <span className="float-left">
+                อุปกรณ์ไฟฟ้าติดสูงสุด
+              </span>
+              <span className="float-right">2 จุด</span>
+            </CListGroupItem>
+            <CListGroupItem>
+              <span className="float-left">
+                อุปกรณ์ไฟฟ้าดับสูงสุด
+              </span>
+              <span className="float-right">2 จุด</span>
+            </CListGroupItem>
+            <CListGroupItem>
+              <span className="float-left">
+                อุปกรณ์ไฟฟ้าเสียร้อยละ
+              </span>
+              <span className="float-right">2 จุด</span>
+            </CListGroupItem>
+            <CListGroupItem>
+              <span className="float-left">
+                แจ้งเตือนข้อมูลสะสม
+              </span>
+              <span className="float-right">จำนวน</span>
+            </CListGroupItem>
+          </CListGroup>
         </CCol>
       </CRow>
     </>

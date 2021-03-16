@@ -40,7 +40,7 @@ const TheHeaderDropdown = () => {
         </div>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownItem header tag="div" color="light" className="text-center">
+        {/*<CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Account</strong>
         </CDropdownItem>
         <CDropdownItem>
@@ -73,15 +73,15 @@ const TheHeaderDropdown = () => {
         </CDropdownItem>
         <CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Settings</strong>
-        </CDropdownItem>
+        </CDropdownItem>*/}
         <CDropdownItem>
           <CIcon name="cil-user" className="mfe-2" />
           Profile
         </CDropdownItem>
-        <CDropdownItem>
+        {/*<CDropdownItem>
           <CIcon name="cil-settings" className="mfe-2" />
           Settings
-        </CDropdownItem>
+        </CDropdownItem>*/}
         <CDropdownItem onClick={handleSignOut}>
           <CIcon name="cil-account-logout" className="mfe-2" />
           Sign out

@@ -57,7 +57,6 @@ const TheHeader = () => {
 
       <CHeaderNav className="px-3">
         <TheHeaderDropdownNotif />
-        <TheHeaderDropdownMssg />
         <TheHeaderDropdown />
       </CHeaderNav>
 

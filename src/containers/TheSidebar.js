@@ -12,6 +12,7 @@ import {
   CSidebarNavItem,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import logos from "../assets/icons/logo_inno.png";
 
 // sidebar nav config
 import navigation from "./_nav";
@@ -32,11 +33,13 @@ const TheSidebar = () => {
           className="c-sidebar-brand-full"
           name="logo-negative"
           height={35}
+          src={logos}
         />
         <CIcon
           className="c-sidebar-brand-minimized"
           name="sygnet"
           height={35}
+          src={logos}
         />
       </CSidebarBrand>
       <CSidebarNav>

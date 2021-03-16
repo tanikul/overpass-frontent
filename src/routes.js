@@ -121,7 +121,7 @@ const routes = [
   { path: '/mapping-overpass', exact: true,  name: 'Mapping Overpass', component: MappingOverpass },
   { path: '/mapping-overpass/:mode', exact: true,  name: 'Mapping Overpass', component: MappingOverpassAdd },
   { path: '/mapping-overpass/:mode/:id', exact: true,  name: 'Mapping Overpass', component: MappingOverpassEdit },
-  { path: '/maps', exact: true,  name: 'Maps', component: Maps }
+  { path: '/maps', exact: true,  name: 'Maps', component: Maps },
 ]
 
 export default routes;

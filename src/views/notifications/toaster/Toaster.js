@@ -61,7 +61,7 @@ const Toaster = () => {
     }, {})
   })()
 
-
+console.log(toasters);
   return (
     <CCard>
       <CCardHeader>
