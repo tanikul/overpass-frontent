@@ -135,7 +135,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    /*try{
+    try{
       await messaging.requestPermission();
       const token = await messaging.getToken();
       await subscribeTokenToTopic(token, `overpass-${this.props.store.getState().authen.overpassGroup}`);
@@ -146,7 +146,7 @@ class App extends Component {
 
     navigator.serviceWorker.addEventListener("message", (message) => {
       this.showNotification(message);
-    });*/
+    });
   }
 
   render() {

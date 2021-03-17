@@ -1,4 +1,4 @@
-/*importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-messaging.js");
 
 var firebaseConfig = {
@@ -32,4 +32,4 @@ messaging.setBackgroundMessageHandler(function(payload) {
 });
 self.addEventListener("notificationclick", function(event) {
      console.log(event);
-});*/
+});

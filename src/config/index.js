@@ -1,6 +1,6 @@
 // URL config
 export const MOCK_API_URL = "http://localhost:8000";
-export const PROD_API_URL = "http://backend.th.app.ruk-com.cloud";
+export const PROD_API_URL = "https://backend.th.app.ruk-com.cloud";
 
 //export const PROD_API_URL = "http://localhost:8080";
 // common config
