@@ -55,7 +55,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toasters: { 'top-right': [{ position: 'top-right', autohide: 300000, closeButton: true, fade: true, title: null, body: null }]}
+      toasters: { 'top-right': [{  }]}
     };
   }
   
