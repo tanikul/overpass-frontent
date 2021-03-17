@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./scss/style.scss";
-import { messaging, subscribeToTopic, subscribeTokenToTopic } from "./init-fcm";
+import { messaging, subscribeTokenToTopic } from "./init-fcm";
 import {
   CCard,
   CCardHeader,
@@ -26,6 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 // React Notification
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager}  from 'react-notifications';
+import firebase from "firebase/app";
+import "firebase/messaging";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -53,7 +55,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toasters: { 'top-right': []}
+      toasters: { 'top-right': [{ position: 'top-right', autohide: 300000, closeButton: true, fade: true, title: null, body: null }]}
     };
   }
   
@@ -135,18 +137,20 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    try{
-      await messaging.requestPermission();
-      const token = await messaging.getToken();
-      await subscribeTokenToTopic(token, `overpass-${this.props.store.getState().authen.overpassGroup}`);
-    } catch (error) {
-      console.error(error);
-      //console.log("Unable to get permission to notify.", err);
-    }
+    if(messaging !== null){
+      try{
+        await messaging.requestPermission();
+        const token = await messaging.getToken();
+        await subscribeTokenToTopic(token, `overpass-${this.props.store.getState().authen.overpassGroup}`);
+      } catch (error) {
+        console.error(error);
+        //console.log("Unable to get permission to notify.", err);
+      }
 
-    navigator.serviceWorker.addEventListener("message", (message) => {
-      this.showNotification(message);
-    });
+      navigator.serviceWorker.addEventListener("message", (message) => {
+        this.showNotification(message);
+      });
+    }
   }
 
   render() {
