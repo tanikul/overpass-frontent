@@ -1,9 +1,9 @@
 {
-  "short_name": "CoreUI-React",
-  "name": "CoreUI-React sample",
+  "short_name": "BSL",
+  "name": "Bangkok Smart Light",
   "icons": [
     {
-      "src": "./assets/img/favicon.png",
+      "src": "./assets/icons/logo_inno_sq.png",
       "sizes": "100x100",
       "type": "image/png"
     }

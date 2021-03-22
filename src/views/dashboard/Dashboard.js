@@ -62,7 +62,6 @@ const Dashboard = () => {
   const [graph, setGraph] = useState([]);
   
   const genDataSets = (body) => {
-    console.log(body);
     let data = [];
     let chk = graph.length === 0 ? true : false;
     if (body !== []) {
@@ -154,10 +153,6 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-console.log('overpassGroup ' + overpassGroup);
-    //console.log(send());
-    
-   // Notification();
     getDataOverpass(accessToken).then(({ status, data }) => {
       if(status === 200){
         setOverpassData(data);
@@ -194,7 +189,7 @@ console.log('overpassGroup ' + overpassGroup);
 
   return (
     <>
-      <h3 className="mb-4">แผนงานวิเคราะห์ข้อมูล</h3>
+      <h3 className="mb-4">แผงงานวิเคราะห์ข้อมูล</h3>
       <CRow>
         <CCol xs="12" sm="6" md="3">
           <CCard>

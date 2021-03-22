@@ -142,3 +142,18 @@ export const getLightBulbAll = async (token) => {
     return err.response.data;
   }
 };
+export const getOverpassStatusByGroupId = async (token, overpassGroup) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const request = await get(
+      "api/overpass/getOverpassStatusByGroupId", `groupId=${overpassGroup}`,
+      headers
+    );
+    return request;
+  } catch (err) {
+    return err.response.data;
+  }
+};

@@ -9,7 +9,7 @@ import {
   CBreadcrumbRouter,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-
+import logos from "../assets/icons/logo_inno.png";
 // routes config
 import routes from "../routes";
 
@@ -50,13 +50,12 @@ const TheHeader = () => {
         onClick={toggleSidebar}
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
-        <CIcon name="logo" height="48" alt="Logo" />
+        <CIcon name="logo" height="48" alt="Logo" src={logos} />
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto" />
 
       <CHeaderNav className="px-3">
-        <TheHeaderDropdownNotif />
         <TheHeaderDropdown />
       </CHeaderNav>
 

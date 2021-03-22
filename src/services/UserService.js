@@ -75,3 +75,18 @@ export const getUserByRole = async (token, query) => {
     return err.response.data;
   }
 };
+
+export const changePassword = async (token, newPassword) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const body = new FormData();
+    body.append("newPassword", newPassword);
+    const response = await post("api/user/changePassword", body, headers);
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+};

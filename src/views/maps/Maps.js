@@ -48,6 +48,7 @@ import {
 import { capitalize } from "src/utils/common";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { API_KEY_GOOGLE_MAP } from "../../config"
 
 // To use the Google Maps JavaScript API, you must register your app project on the Google API Console and get a Google API key which you can add to your app
 
@@ -63,9 +64,6 @@ const ReactGoogleMaps = () => {
 
   // local
   //const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
-  
-  // production
-  const apiKey = "AIzaSyANe0OjAC6ILZQGF9udm0BlN0QHW1JMMME";
 
   const [defaultCenter, setDefaultCenter] = useState({
     lat: parseFloat(13.8583),
@@ -162,7 +160,7 @@ const ReactGoogleMaps = () => {
     return (
       <GoogleMapsComponent
         key="map"
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${apiKey}`}
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${API_KEY_GOOGLE_MAP}`}
         loadingElement={<div style={{ height: `100%` }} />}
         containerElement={<div style={{ height: `400px` }} />}
         mapElement={<div style={{ height: `100%` }} />}

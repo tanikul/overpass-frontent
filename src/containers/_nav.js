@@ -4,7 +4,7 @@ import CIcon from "@coreui/icons-react";
 const _nav = [
   {
     _tag: "CSidebarNavItem",
-    name: "แผนงานวิเคราะห์ข้อมูล",
+    name: "แผงงานวิเคราะห์ข้อมูล",
     to: "/dashboard",
     icon: 'cil-map',
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
@@ -26,7 +26,7 @@ const _nav = [
   {
     _tag: "CSidebarNavItem",
     name: "รายการแจ้งซ่อม",
-    to: "/theme/colors",
+    to: "/repairs",
     icon: "cil-chart-pie",
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
   },

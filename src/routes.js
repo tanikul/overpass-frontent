@@ -55,6 +55,8 @@ const MappingOverpass = React.lazy(() => import('./views/mapping-overpass/Mappin
 const MappingOverpassAdd = React.lazy(() => import('./views/mapping-overpass/MappingForms'));
 const MappingOverpassEdit = React.lazy(() => import('./views/mapping-overpass/MappingForms'));
 const Maps = React.lazy(() => import('./views/maps/Maps'));
+const Repairs = React.lazy(() => import('./views/repairs/Repairs'));
+const RepairDetail = React.lazy(() => import('./views/repairs/RepairDetail'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -122,6 +124,8 @@ const routes = [
   { path: '/mapping-overpass/:mode', exact: true,  name: 'Mapping Overpass', component: MappingOverpassAdd },
   { path: '/mapping-overpass/:mode/:id', exact: true,  name: 'Mapping Overpass', component: MappingOverpassEdit },
   { path: '/maps', exact: true,  name: 'Maps', component: Maps },
+  { path: '/repairs', exact: true,  name: 'Repairs', component: Repairs },
+  { path: '/repairs/:id', exact: true,  name: 'RepairDetail', component: RepairDetail },
 ]
 
 export default routes;

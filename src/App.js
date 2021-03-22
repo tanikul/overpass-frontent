@@ -55,7 +55,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toasters: { 'top-right': [{  }]}
+      toasters: { 'top-right': []}
     };
   }
   
@@ -76,22 +76,36 @@ class App extends Component {
       }else{
         data = message.data.data;
       }
+      console.log(data);
       const position = 'top-right';
-      const autohide = true;
-      const autohideValue = 100000;
       const closeButton = true;
-      const fade = true;
+      const fade = false;
       let headerColor = '';
       let bodyColor = '';
+      let buttonColor = '';
       if(data.status === 'WARNING'){
         headerColor = 'toast-header-warning';
         bodyColor = 'notification-warning';
+        buttonColor = "warning";
       }else if(data.status === 'OFF'){
         headerColor = 'toast-header-danger';
         bodyColor = 'notification-danger';
+        buttonColor = "danger";
       }
-      
-      var joined = this.state.toasters['top-right'].concat({ position, autohide: autohide && autohideValue, closeButton, fade, title: data.title, body: data.body, headerColor, bodyColor });
+      let str = "";
+      if(data.location !== ""){
+        str += "<b>สถานที่</b>: " + data.location + "<br/>"; 
+      }
+      if(data.note !== ""){
+        str += "<b>Note</b>: " + data.note + "<br/>"; 
+      }
+      if(data.timeToHang !== ""){
+        str += "<b>วันเวลาที่ได้รับแจ้ง</b>: " + data.timeToHang + "<br/>"; 
+      }
+      /*if(data.coordinate !== ""){
+        str += "พิกัด: " + `<a href=${data.coordinate}>${data.coordinate}</a><br/>`; 
+      }*/
+      var joined = this.state.toasters['top-right'].concat({ position, autohide: false, closeButton, fade, title: data.topic, body: str, headerColor, bodyColor, buttonColor });
       this.setState({
         toasters: { 'top-right': joined}
         
@@ -218,11 +232,13 @@ class App extends Component {
                 autohide={toast.autohide}
                 fade={toast.fade}
               >
-                <CToastHeader closeButton={toast.closeButton} className={toast.headerColor}>
-                {toast.title}
+                 <CToastHeader closeButton={toast.closeButton} className={toast.headerColor}>
+                <b>{toast.title}</b>
                 </CToastHeader>
                 <CToastBody className={toast.bodyColor}>
-                  {toast.body}
+                  <div dangerouslySetInnerHTML={{__html: toast.body}} />
+                    <br/>
+                    <CButton block color={toast.buttonColor}>Open in browser</CButton>
                 </CToastBody>
               </CToast>
             )

@@ -23,6 +23,7 @@ import * as Yup from "yup";
 import { requestLogin } from "../../../actions/authen";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router";
+import logos from "../../../assets/icons/logo_inno_sq.png";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -78,11 +79,13 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CImg
-                    src="https://dummyimage.com/100x100/cccccc/ffffff.png"
+                    src={logos}
                     shape="rounded"
                     fluid
                     align="center"
                     className="mb-4 d-block"
+                    width="100"
+                    height="100"
                   />
                   <h4 className="text-center">Welcome Back,</h4>
                   <p className="mb-4 text-center text-black-50">
