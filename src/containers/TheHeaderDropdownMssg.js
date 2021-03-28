@@ -8,11 +8,14 @@ import {
   CImg
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { useSelector } from "react-redux";
 
 const TheHeaderDropdownMssg = () => {
   const itemsCount = 4
-  return (
-    <CDropdown
+  const name = useSelector((state) => state.authen.name);
+  return (<>
+    ยินดีต้อนรับ {name}
+    {/*<CDropdown
       inNav
       className="c-header-nav-item mx-2"
       direction="down"
@@ -120,7 +123,8 @@ const TheHeaderDropdownMssg = () => {
         </CDropdownItem>
         <CDropdownItem href="#" className="text-center border-top"><strong>View all messages</strong></CDropdownItem>
       </CDropdownMenu>
-    </CDropdown>
+    </CDropdown>*/}
+    </>
   )
 }
 

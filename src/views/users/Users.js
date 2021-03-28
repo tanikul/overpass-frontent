@@ -12,8 +12,6 @@ import {
   CForm,
   CLabel,
   CSelect,
-  CTooltip,
-  CLink,
   CInput,
   CFormGroup,
   CModal,
@@ -25,14 +23,10 @@ import { TextMask, InputAdapter } from "react-text-mask-hoc";
 import CIcon from "@coreui/icons-react";
 import UserAddEdit from "./UserAddEdit";
 import { deleteUser, getUsers } from "src/services/UserService";
-import { LOGIN_FAILED_CODE, roleUserControl, userFullAccess } from "src/config";
+import { LOGIN_FAILED_CODE, roleUserControl } from "src/config";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import {
-  getPrefixes,
-  getRoles,
-  getStatuses,
-} from "src/services/CommonService";
+import { getPrefixes, getRoles, getStatuses } from "src/services/CommonService";
 import { capitalize } from "src/utils/common";
 import { setLoginExpired } from "src/actions/authen";
 import Swal from "sweetalert2";
@@ -74,6 +68,7 @@ const Users = () => {
   const [items, setItems] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [username, setUsername] = useState("");
+  const [usernameShow, setUsernameShow] = useState("");
   const prevUsername = usePrevious(username);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -106,7 +101,7 @@ const Users = () => {
 
   const showDeleteModal = (item) => {
     setUserId(item.id);
-    setUsername(item.username);
+    setUsernameShow(item.username);
     setDeleteModal(!deleteModal);
   };
 
@@ -161,15 +156,15 @@ const Users = () => {
     });
   };
 
-  const handleDeleteUser = (e) => {
+  const handleDeleteUser = () => {
     setDeleteLoading(true);
-    setUsername("");
     deleteUser(accessToken, userId).then((response) => {
+      setUserId("");
       if (response.status === 200) {
         setDeleteLoading(false);
         MySwal.fire({
           title: "Success",
-          text: "Deleted user successfully  ",
+          text: "ลบผู้ใช้งานสำเร็จ  ",
           icon: "success",
           didClose: () => {
             setDeleteModal(false);
@@ -180,7 +175,7 @@ const Users = () => {
         setDeleteLoading(false);
         MySwal.fire({
           title: "Failed",
-          text: "Cannot delete user",
+          text: "ไม่สามารถลบผูใช้งานระบบได้",
           icon: "error",
           didClose: () => {
             setDeleteModal(false);
@@ -201,13 +196,11 @@ const Users = () => {
       return status === 200 ? setPrefixes(data) : setPrefixes([]);
     });
     handleSearch();
-    console.log(sorterValue);
-    console.log(page + ', ' + itemsPerPage + ',' + sorterValue);
   }, [page, itemsPerPage, sorterValue]);
 
   if (!isAuth) {
     return <Redirect to="/" />;
-  } else if (!['SUPER_ADMIN', 'ADMIN'].includes(userRole)) {
+  } else if (!["SUPER_ADMIN", "ADMIN"].includes(userRole)) {
     return <Redirect to="/dashboard" />;
   }
 
@@ -218,7 +211,9 @@ const Users = () => {
           <h2>ผู้ใช้งานระบบ</h2>
         </CCol>
         <CCol
-          xs={6} md={6} sm={6} 
+          xs={6}
+          md={6}
+          sm={6}
           className="d-block d-sm-flex align-items-right justify-content-end mb-4"
         >
           <CButton color="primary" onClick={() => showModal("add")}>
@@ -232,9 +227,7 @@ const Users = () => {
           <CCard>
             <CCardBody>
               <CRow>
-                <CCol className="mb-3 font-weight-bold">
-                  ค้นหา
-                </CCol>
+                <CCol className="mb-3 font-weight-bold">ค้นหา</CCol>
               </CRow>
               <CRow>
                 <CCol xs={12} md={6} lg={3}>
@@ -300,7 +293,6 @@ const Users = () => {
 
                       {roles.map(
                         (role) =>
-
                           roleUserControl[userRole].includes(role.value) && (
                             <option key={role.key} value={role.key}>
                               {capitalize(role.value.toLowerCase())}
@@ -355,7 +347,9 @@ const Users = () => {
                 </CCol>
               </CRow>
               <CCol
-                xs={12} md={12} lg={12}
+                xs={12}
+                md={12}
+                lg={12}
                 className="mt-3 d-block d-sm-flex justify-content-end"
               >
                 <CFormGroup>
@@ -391,40 +385,44 @@ const Users = () => {
                 items={items}
                 fields={[
                   {
-                    key: 'username',
-                    label: 'Username',
+                    key: "username",
+                    label: "Username",
                   },
                   {
-                    key: 'prefix',
-                    label: 'ชื่อนำหน้า',
+                    key: "prefix",
+                    label: "ชื่อนำหน้า",
                   },
                   {
-                    key: 'firstName',
-                    label: 'ชื่อ',
+                    key: "firstName",
+                    label: "ชื่อ",
                   },
                   {
-                    key: 'lastName',
-                    label: 'นามสกุล',
+                    key: "lastName",
+                    label: "นามสกุล",
                   },
                   {
-                    key: 'role',
-                    label: 'Role',
+                    key: "role",
+                    label: "Role",
                   },
                   {
-                    key: 'status',
-                    label: 'Status',
+                    key: "status",
+                    label: "Status",
                   },
                   {
-                    key: 'email',
-                    label: 'Email',
+                    key: "email",
+                    label: "Email",
                   },
                   {
-                    key: 'lineId',
-                    label: 'Line ID',
+                    key: "lineId",
+                    label: "Line ID",
                   },
                   {
-                    key: 'mobileNo',
-                    label: 'Mobile No',
+                    key: "mobileNo",
+                    label: "Mobile No",
+                  },
+                  {
+                    key: "groupName",
+                    label: "กลุ่มสะพานลอย",
                   },
                   {
                     key: "action",
@@ -432,10 +430,9 @@ const Users = () => {
                     _style: { width: "1%" },
                     filter: false,
                   },
-                ]
-                  .filter((field) =>
-                    userRole === "ADMIN" ? field : field !== "role"
-                  )}
+                ].filter((field) =>
+                  userRole === "ADMIN" ? field : field !== "role"
+                )}
                 hover
                 itemsPerPage={itemsPerPage}
                 // clickableRows
@@ -459,39 +456,27 @@ const Users = () => {
                   action: (item) => (
                     <td className="py-2">
                       <CButtonGroup className="mr-2">
-                        <CTooltip content="Edit">
-                          <CLink
-                            size="sm"
-                            className="mr-3"
-                            onClick={() => showModal("edit", item)}
-                          >
-                            <CIcon
-                              size="sm"
-                              name="cil-pencil"
-                              className="text-dark"
-                            />
-                          </CLink>
-                        </CTooltip>
-                        <CTooltip content="Delete">
-                          <CLink
-                            size="sm"
-                            className="mr-2"
-                            onClick={() => showDeleteModal(item)}
-                          >
-                            <CIcon
-                              size="sm"
-                              name="cil-trash"
-                              className="text-dark"
-                            />
-                          </CLink>
-                        </CTooltip>
+                        <CButton
+                          size="sm"
+                          className="btn-github btn-brand mr-1 mb-1"
+                          onClick={() => showModal("edit", item)}
+                        >
+                          <CIcon size="sm" name="cil-pencil" />
+                        </CButton>
+                        <CButton
+                          size="sm"
+                          className="btn-youtube btn-brand mr-1 mb-1"
+                          onClick={() => showDeleteModal(item)}
+                        >
+                          <CIcon size="sm" name="cil-trash" />
+                        </CButton>
                       </CButtonGroup>
                     </td>
                   ),
                 }}
                 sorter
                 sorterValue={sorterValue}
-              //onSorterValueChange={setSorterValue}
+                //onSorterValueChange={setSorterValue}
               />
               <CRow>
                 <CCol xs={12} md={6}>
@@ -554,11 +539,10 @@ const Users = () => {
                   </div>
                 )}
                 <CModalHeader>
-                  <h5>Are you sure to delete user?</h5>
+                  <h5>คุณต้องการลบ ?</h5>
                 </CModalHeader>
                 <CModalBody>
-                  Deleting user <strong>{username}</strong> will permanently
-                  delete, this process cannot be recovered.
+                  ลบผู้ใช้งาน <strong>{usernameShow}</strong>
                 </CModalBody>
                 <CModalFooter>
                   <CButton color="light" onClick={handleClosedModal}>

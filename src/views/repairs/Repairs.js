@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCardHeader,
@@ -9,16 +8,12 @@ import {
   CListGroupItem,
   CRow,
   CLink,
-  CTabContent,
-  CTabPane
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
 import 
     { getOverpassStatusByGroupId }
    from "src/services/OverpassService";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from '@material-ui/lab/Pagination';
-import PaginationItem from '@material-ui/lab/PaginationItem';
 import Moment from "react-moment";
 
 import { Redirect } from "react-router-dom";

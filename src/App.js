@@ -1,33 +1,17 @@
-import React, { Component, useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import "./scss/style.scss";
-import { messaging, subscribeTokenToTopic } from "./init-fcm";
 import {
-  CCard,
-  CCardHeader,
-  CCardBody,
   CToast,
   CToastBody,
   CToastHeader,
   CToaster,
-  CForm,
-  CInput,
-  CInputCheckbox,
   CButton,
-  CContainer,
-  CRow,
-  CCol,
-  CFormGroup,
-  CLabel
 } from '@coreui/react'
-import ReactDOM from 'react-dom';
-import Toaster from "./views/notifications/toaster/Toaster";
-import { useDispatch, useSelector } from "react-redux";
 // React Notification
 import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager}  from 'react-notifications';
-import firebase from "firebase/app";
 import "firebase/messaging";
+import { messaging, subscribeTokenToTopic } from "./init-fcm";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -56,6 +40,7 @@ class App extends Component {
     super(props);
     this.state = {
       toasters: { 'top-right': []}
+      //toasters: { 'top-right': [{ position: 'top-right', autohide: false, closeButton: true, fade: false, title: "data.topic", body: "str", headerColor: "danger", bodyColor: "danger", buttonColor: "danger", id: 74055 }]}
     };
   }
   
@@ -68,7 +53,6 @@ class App extends Component {
     
     let toaster = [];
     toaster['top-right'] = [];
-    console.log(message.data.data);
     if(message.data !== undefined && ("firebase-messaging-msg-data" in message.data || "data" in message.data)){
       let data = {};
       if("firebase-messaging-msg-data" in message.data){
@@ -76,7 +60,6 @@ class App extends Component {
       }else{
         data = message.data.data;
       }
-      console.log(data);
       const position = 'top-right';
       const closeButton = true;
       const fade = false;
@@ -91,6 +74,10 @@ class App extends Component {
         headerColor = 'toast-header-danger';
         bodyColor = 'notification-danger';
         buttonColor = "danger";
+      }else if(data.status === 'ON'){
+        headerColor = 'toast-header-info';
+        bodyColor = 'notification-info';
+        buttonColor = "success";
       }
       let str = "";
       if(data.location !== ""){
@@ -102,56 +89,26 @@ class App extends Component {
       if(data.timeToHang !== ""){
         str += "<b>วันเวลาที่ได้รับแจ้ง</b>: " + data.timeToHang + "<br/>"; 
       }
-      /*if(data.coordinate !== ""){
-        str += "พิกัด: " + `<a href=${data.coordinate}>${data.coordinate}</a><br/>`; 
-      }*/
-      var joined = this.state.toasters['top-right'].concat({ position, autohide: false, closeButton, fade, title: data.topic, body: str, headerColor, bodyColor, buttonColor });
+      var joined = this.state.toasters['top-right'].concat({ position, autohide: false, closeButton, fade, title: data.topic, body: str, headerColor, bodyColor, buttonColor, id: data.id });
       this.setState({
-        toasters: { 'top-right': joined}
+        toasters: { 'top-right': joined }
         
       })
-      console.log(this.state.toasters);
-      //this.setState({toasters: toasters});
-    }
-    
-    
-    //return toasters;
-    //setToasters({toasters: toasters})
-    
-    //console.log(this.state);
-    //let toasters = {toasters: toasters};
-    /*return Object.keys(toasters).map((toasterKey) => (
-      <CToaster
-        position={toasterKey}
-        key={'toaster' + toasterKey}
-      >
-        {
-          toasters[toasterKey].map((toast, key)=>{
-          return(
-            <CToast
-              key={'toast' + key}
-              show={true}
-              autohide={toast.autohide}
-              fade={toast.fade}
-            >
-              <CToastHeader closeButton={toast.closeButton}>
-                Toast title
-              </CToastHeader>
-              <CToastBody>
-                {`This is a toast in ${toasterKey} positioned toaster number ${key + 1}.`}
-              </CToastBody>
-            </CToast>
-          )
-        })
-        }
-      </CToaster>
-      ))*/
-    
-      
+    }  
   }
 
+  openInBrowser(e, id) {
+    var array = this.state.toasters['top-right']; 
+    array.splice(e, 1);  
+    let toaster = [];
+    toaster['top-right'] = [];
+    this.setState({toaster: array});
+    
+    const str = `/repairs/${id}`
+    window.open(str, "_blank")
+  }
   async componentDidMount() {
-    if(messaging !== null){
+    if(messaging !== null && this.props.store.getState().authen.overpassGroup !== undefined){
       try{
         await messaging.requestPermission();
         const token = await messaging.getToken();
@@ -172,6 +129,17 @@ class App extends Component {
       <Router key="route">
         <React.Suspense fallback={loading}>
           <Switch>
+          <Route
+                exact
+                path="/"
+                render={() => {
+                    return (
+                      this.props.store.getState().authen.isAuth ?
+                      <Redirect to="/dashboard" /> :
+                      <Redirect to="/login" /> 
+                    )
+                }}
+              />
             <Route
               exact
               path="/login"
@@ -212,7 +180,6 @@ class App extends Component {
               name="Home"
               render={(props) => <TheLayout {...props} />}
             />
-            <NotificationContainer />
           </Switch>
         </React.Suspense>
       </Router>
@@ -238,7 +205,7 @@ class App extends Component {
                 <CToastBody className={toast.bodyColor}>
                   <div dangerouslySetInnerHTML={{__html: toast.body}} />
                     <br/>
-                    <CButton block color={toast.buttonColor}>Open in browser</CButton>
+                    <CButton block color={toast.buttonColor} onClick={(e) => this.openInBrowser(key, toast.id)}>Open in browser</CButton>
                 </CToastBody>
               </CToast>
             )

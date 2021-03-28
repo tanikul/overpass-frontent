@@ -4,46 +4,24 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
-  CCollapse,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CFade,
   CForm,
   CFormGroup,
-  CFormText,
-  CValidFeedback,
   CInvalidFeedback,
-  CTextarea,
   CInput,
-  CInputFile,
-  CInputCheckbox,
-  CInputRadio,
-  CInputGroup,
-  CInputGroupAppend,
-  CInputGroupPrepend,
-  CDropdown,
-  CInputGroupText,
   CLabel,
   CSelect,
   CRow,
   CSwitch,
-  CBadge,
   CDataTable,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { DocsLink } from "src/reusable";
-import { getUserByRole } from "src/services/UserService";
-import { USER_ROLE } from "src/config";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { capitalize } from "src/utils/common";
 import { getMappingAddress } from "src/services/CommonService";
 import {
   getOverpassesByCond,
-  getOverpassesAll,
 } from "src/services/OverpassService";
 import {
   insertMappingOverpasses,
@@ -51,23 +29,17 @@ import {
   getOverpassByGroupId,
 } from "src/services/MappingService";
 import * as Yup from "yup";
-import { Formik, Field } from "formik";
+import { Formik } from "formik";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "spinkit/spinkit.min.css";
 import { Redirect } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import ls from "local-storage";
 
 const MySwal = withReactContent(Swal);
 
 const MappingForms = ({ match, history }) => {
-  const [collapsed, setCollapsed] = React.useState(true);
-  const [showElements, setShowElements] = React.useState(true);
   const isAuth = useSelector((state) => state.authen.isAuth);
   const accessToken = useSelector((state) => state.authen.access_token);
-  const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState("");
   const [province, setProvince] = useState("");
   const [amphur, setAmphur] = useState("");
   const [district, setDistrict] = useState("");
@@ -77,38 +49,42 @@ const MappingForms = ({ match, history }) => {
   const [selectedOverpass, setSelectedOverpass] = useState([]);
   const [selectedOverpassTmp, setSelectedOverpassTmp] = useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
-
-  const [overpassData, setOverpassData] = useState([]);
   const [options, setOptions] = useState([]);
   const formikRef = useRef();
   const selectProvinceRef = useRef();
   const selectAmphurRef = useRef();
   const selectDistrictRef = useRef();
   const checkallOverpass = useRef();
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
   const [disableDraft, setDisableDraft] = useState(true);
   const [disableConfirm, setDisableConfirm] = useState(true);
   const multiselectRef = React.createRef();
   const isEdit = match.params.mode === "edit" ? true : false;
   const [reload, setReload] = useState(false);
   const [checked, setChecked] = useState(false);
-
+  const userRole = useSelector((state) => state.authen.role);
+  
   const schema = () => {
     let schema = {
       groupName: Yup.string().required("Name is required!"),
-      lineNotifyToken: Yup.string().required("Name is required!"),
+      lineNotifyToken: Yup.string().required("Line Notify token is required!"),
+      email: Yup.string().required("Email is required!"),
     };
 
     return Yup.object().shape(schema);
   };
 
   const handleAdd = (values) => {
+    
     const body = {
       groupId: values.groupId,
       overpasses: selectedOverpass,
       groupName: values.groupName,
       lineNotiToken: values.lineNotifyToken,
+      email: values.email,
     };
+    console.log(body);
+    //return false;
     if (!isEdit) {
       insertMappingOverpasses(accessToken, body)
         .then((response) => {
@@ -221,9 +197,9 @@ const MappingForms = ({ match, history }) => {
 
   const clickRemove = (id) => {
     let arr = [];
-    selectedOverpass.forEach((item, i) => {
+    selectedOverpass.forEach((item) => {
       if (item.id !== id) {
-        arr.push(Object.values(item));
+        arr.push(item);
       }
     });
     setSelectedOverpass(arr);
@@ -286,7 +262,6 @@ const MappingForms = ({ match, history }) => {
 
   const setOptionsVal = (data, type) => {
     let arr = [];
-    let amphurId = 0;
     let select = [];
     selectedOverpass.forEach((k, j) => {
       select.push(k.id);
@@ -331,14 +306,18 @@ const MappingForms = ({ match, history }) => {
         ({ status, data }) => {
           formikRef.current.setFieldValue("groupName", data.groupName);
           formikRef.current.setFieldValue("groupId", data.groupId);
+          formikRef.current.setFieldValue("email", data.email);
           formikRef.current.setFieldValue(
             "lineNotifyToken",
-            data.lineNotiToken
+            data.lineNotifyToken
           );
 
-          return status === 200
-            ? setSelectedOverpass(data.overpasses)
-            : setSelectedOverpass([]);
+          if(status === 200){
+            setSelectedOverpass(data.overpasses)
+            setDisableConfirm(false)
+          }else{
+            setSelectedOverpass([]);
+          }
         }
       );
     }
@@ -348,6 +327,12 @@ const MappingForms = ({ match, history }) => {
     checkallOverpass.current.disabled = false;
   }, [reload]);
 
+  if (!isAuth) {
+    return <Redirect to="/" />;
+  } else if (!["SUPER_ADMIN", "ADMIN"].includes(userRole)) {
+    return <Redirect to="/dashboard" />;
+  }
+
   return (
     <Formik
       innerRef={formikRef}
@@ -356,6 +341,8 @@ const MappingForms = ({ match, history }) => {
         groupId: 0,
         groupName: "",
         overpasses: {},
+        lineNotifyToken: "",
+        email: ""
       }}
       validationSchema={schema}
       onSubmit={handleAdd}
@@ -390,7 +377,6 @@ const MappingForms = ({ match, history }) => {
                             value={values.groupName}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={isEdit}
                           />
                           <CInvalidFeedback>
                             {errors.groupName}
@@ -505,7 +491,7 @@ const MappingForms = ({ match, history }) => {
                       </CCol>
                     </CRow>
                     <CRow>
-                      <CCol>
+                      <CCol xs={12} md={6} lg={6}>
                         <CFormGroup>
                           <CLabel htmlFor="lineNotifyToken">
                             Line Notify Token
@@ -522,10 +508,32 @@ const MappingForms = ({ match, history }) => {
                             value={values.lineNotifyToken}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={isEdit}
                           />
                           <CInvalidFeedback>
                             {errors.lineNotifyToken}
+                          </CInvalidFeedback>
+                        </CFormGroup>
+                      </CCol>
+                      <CCol xs={12} md={6} lg={6}>
+                        <CFormGroup>
+                          <CLabel htmlFor="email">
+                            Email
+                          </CLabel>
+
+                          <CInput
+                            id="email"
+                            name="email"
+                            valid={!!values.email}
+                            invalid={
+                              touched.email &&
+                              !!errors.email
+                            }
+                            value={values.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          <CInvalidFeedback>
+                            {errors.email}
                           </CInvalidFeedback>
                         </CFormGroup>
                       </CCol>
@@ -617,7 +625,7 @@ const MappingForms = ({ match, history }) => {
                           color="primary"
                           disabled={disableConfirm}
                         >
-                          Confirm
+                          Submit
                         </CButton>
                         <CButton
                           type="button"

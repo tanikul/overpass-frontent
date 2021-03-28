@@ -1,7 +1,10 @@
-import React from "react";
-import CIcon from "@coreui/icons-react";
-
 const _nav = [
+  {
+    _tag: "CSidebarNavTitle",
+    name: "เมนูการใช้งาน",
+    _children: ["เมนูการใช้งาน"],
+    roles: ['SUPER_ADMIN', 'ADMIN']
+  },
   {
     _tag: "CSidebarNavItem",
     name: "แผงงานวิเคราะห์ข้อมูล",
@@ -13,13 +16,13 @@ const _nav = [
     _tag: 'CSidebarNavItem',
     name: 'เขตพื้นที่และอุปกรณ์',
     to: '/maps',
-    icon: 'cil-map',
+    icon: 'cil-globe-alt',
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
   },
   {
     _tag: "CSidebarNavItem",
     name: "รายงาน",
-    to: "/theme/colors",
+    to: "/",
     icon: "cil-chart-pie",
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
   },
@@ -27,20 +30,13 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "รายการแจ้งซ่อม",
     to: "/repairs",
-    icon: "cil-chart-pie",
+    icon: "cil-asterisk",
     roles: ['USER', 'SUPER_ADMIN', 'ADMIN']
   },
   {
     _tag: "CSidebarNavTitle",
-    name: "Administrator",
-    _children: ["Administrator"],
-    roles: ['SUPER_ADMIN', 'ADMIN']
-  },
-  {
-    _tag: "CSidebarNavItem",
-    name: "จัดการผู้ใช้งานระบบ",
-    to: "/users",
-    icon: "cil-people",
+    name: "ผู้ดูแลระบบ",
+    _children: ["ผู้ดูแลระบบ"],
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
   {
@@ -54,9 +50,30 @@ const _nav = [
     _tag: "CSidebarNavItem",
     name: "จับกลุ่มสะพานลอย",
     to: "/mapping-overpass",
+    icon: "cil-list-rich",
+    roles: ['SUPER_ADMIN', 'ADMIN']
+  },
+  {
+    _tag: "CSidebarNavItem",
+    name: "จัดการผู้ใช้งานระบบ",
+    to: "/users",
     icon: "cil-people",
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
+  {
+    _tag: "CSidebarNavItem",
+    name: "ตั้งค่าหลอดไฟ",
+    to: "/light-bulb",
+    icon: "cil-lightbulb",
+    roles: ['SUPER_ADMIN', 'ADMIN']
+  },
+  /*{
+    _tag: "CSidebarNavItem",
+    name: "จับกลุมผู้ใช้งานระบบ",
+    to: "/mapping-overpass/users",
+    icon: "cil-people",
+    roles: ['SUPER_ADMIN', 'ADMIN']
+  },*/
 ];
 
 export default _nav;

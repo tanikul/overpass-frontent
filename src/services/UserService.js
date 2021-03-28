@@ -90,3 +90,30 @@ export const changePassword = async (token, newPassword) => {
     return err.response;
   }
 };
+
+export const getUserByAuthen = async (token) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const request = await get(
+      "api/user/getUserByAuthen","",headers
+    );
+    return request;
+  } catch (err) {
+    return err.response.data;
+  }
+};
+
+export const updateUserProfile = async (token, body = {}) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const response = await post("api/user/updateUserProfile", body, headers);
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+};

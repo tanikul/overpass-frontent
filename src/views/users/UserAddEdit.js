@@ -14,7 +14,6 @@ import {
   CInvalidFeedback,
 } from "@coreui/react";
 import { TextMask, InputAdapter } from "react-text-mask-hoc";
-import { getRoleId, getPrefixId } from "../../services/CommonService";
 import { addUser, editUser } from "src/services/UserService";
 import { useSelector } from "react-redux";
 import { getMappingOverPassAll } from "src/services/MappingService";
@@ -258,12 +257,14 @@ const UserAddEdit = (props) => {
                 <CCol xs={12} md={4} lg={3}>
                   <h4>{(isEdit) ? "แก้ไขผู้ใช้งาน" : "เพิ่มผู้ใช้งาน"}</h4>
                 </CCol>
+              </CRow>
+              <CRow>
                 <CCol>
                   <CFormGroup>
                     <CCol md="3">
                       <CLabel className="font-weight-bold">Username:</CLabel>
                     </CCol>
-                    <CCol xs={12} md={9} lg={3}>
+                    <CCol xs={12} md={9} lg={8}>
                       <CInput
                         id="username"
                         name="username"
@@ -285,7 +286,7 @@ const UserAddEdit = (props) => {
                   <CFormGroup>
                     <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Prefix:
+                        คำนำหน้า:
                       </CLabel>
                     </CCol>
                     <CCol>
@@ -314,7 +315,7 @@ const UserAddEdit = (props) => {
                   <CFormGroup>
                     <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        First Name:
+                        ชื่อ:
                       </CLabel>
                     </CCol>
                     <CCol>
@@ -336,7 +337,7 @@ const UserAddEdit = (props) => {
                   <CFormGroup>
                     <CCol>
                       <CLabel className="font-weight-bold" htmlFor="text-input">
-                        Last Name:
+                        นามสกุล:
                       </CLabel>
                     </CCol>
                     <CCol>

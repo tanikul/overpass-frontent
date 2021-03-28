@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCol,
@@ -12,8 +11,6 @@ import {
   CForm,
   CLabel,
   CSelect,
-  CTooltip,
-  CLink,
   CInput,
   CFormGroup,
   CModal,
@@ -21,17 +18,13 @@ import {
   CModalFooter,
   CModalHeader,
 } from "@coreui/react";
-import { TextMask, InputAdapter } from "react-text-mask-hoc";
 import CIcon from "@coreui/icons-react";
 import OverpassAddEdit from "./OverpassAddEdit";
 import { deleteOverpass, getOverpasses } from "src/services/OverpassService";
-import { LOGIN_FAILED_CODE, roleUserControl, userFullAccess } from "src/config";
+import { LOGIN_FAILED_CODE } from "src/config";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import {
-  getMappingAddress,
-  getStatuses
-} from "src/services/CommonService";
+import { getMappingAddress, getStatuses } from "src/services/CommonService";
 import { capitalize } from "src/utils/common";
 import { setLoginExpired } from "src/actions/authen";
 import Swal from "sweetalert2";
@@ -64,10 +57,6 @@ const Overpasses = () => {
   const prevUsername = usePrevious(id);
   const [name, setName] = useState("");
   const [setpointWatt, setSetpointWatt] = useState("");
-  const [status, setStatus] = useState("");
-  const [minWatt, setMinWatt] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longtitude, setLongTitude] = useState("");
   const [location, setLocation] = useState("");
   const [amphur, setAmphur] = useState("");
   const [district, setDistrict] = useState("");
@@ -80,6 +69,7 @@ const Overpasses = () => {
   const [provinces, setProvinces] = useState([]);
   const [amphurs, setAmphurs] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [deleteOverpassName, setDeleteOverpassName] = useState("");
 
   const pageChange = (newPage) => {
     if (newPage - 1 >= 0 && page !== newPage - 1) {
@@ -91,13 +81,14 @@ const Overpasses = () => {
     setModal(!modal);
     if (action === "edit") {
       setItemDetail(item);
-    }else{
+    } else {
       setItemDetail({});
     }
   };
 
   const showDeleteModal = (item) => {
     setId(item.id);
+    setDeleteOverpassName(item.name);
     setDeleteModal(!deleteModal);
   };
 
@@ -153,7 +144,7 @@ const Overpasses = () => {
         setDeleteLoading(false);
         MySwal.fire({
           title: "Success",
-          text: "Deleted user successfully  ",
+          text: "ลบสะพานลอยสำเร็จ  ",
           icon: "success",
           didClose: () => {
             setDeleteModal(false);
@@ -164,7 +155,7 @@ const Overpasses = () => {
         setDeleteLoading(false);
         MySwal.fire({
           title: "Failed",
-          text: "Cannot delete user",
+          text: "ไม่สามารถลบสะพานลอยได้ เนื่องจากมีกลุ่มผูกกับสะพานลอยนี้อยู่",
           icon: "error",
           didClose: () => {
             setDeleteModal(false);
@@ -176,61 +167,76 @@ const Overpasses = () => {
 
   const selectProvince = (e) => {
     let id = e.target.value;
-    setAmphurs(provinces.find((val) => { return val.key == id }).amphur);
+    setAmphurs(
+      provinces.find((val) => {
+        return val.key == id;
+      }).amphur
+    );
     setDistricts([]);
     setProvince(id);
   };
 
   const selectAmphur = (e) => {
     let id = e.target.value;
-    setDistricts(amphurs.find((val) => { return val.key == id }).district);
+    setDistricts(
+      amphurs.find((val) => {
+        return val.key == id;
+      }).district
+    );
     setAmphur(id);
   };
 
-  useEffect(() => {
-
-    if(provinces.length === 0){
-      getMappingAddress(accessToken).then(({ status, data }) => {
-        return status === 200 ? setProvinces(data) : setProvinces([]);
-      });
-    }
-    getStatuses(accessToken).then(({ status, data }) => {
-      return status === 200 ? setStatuses(data) : setStatuses([]);
-    });
-    setLoading(true);
-    let body = {
-      page,
-      limit: itemsPerPage,
-      setpointWatt,
-    };
-    if (sorterValue && Object.keys(sorterValue).length !== 0) {
-      const { column, asc } = sorterValue;
-      body = { ...body, sort: column, order: asc ? "asc" : "desc" };
-    }
-
-    getOverpasses(accessToken, body).then((users) => {
-      if (users.code && users.code === LOGIN_FAILED_CODE) {
-        dispatch(setLoginExpired());
-        return;
+  useEffect(
+    () => {
+      if (provinces.length === 0) {
+        getMappingAddress(accessToken).then(({ status, data }) => {
+          return status === 200 ? setProvinces(data) : setProvinces([]);
+        });
       }
-      setItems(users.data);
-      setItemsPerPage(itemsPerPage);
-      setTotalRecords(Number(users.totalRecords));
-      setLoading(false);
-    });
-  }, [/*page, itemsPerPage, sorterValue*/]);
+      getStatuses(accessToken).then(({ status, data }) => {
+        return status === 200 ? setStatuses(data) : setStatuses([]);
+      });
+      setLoading(true);
+      let body = {
+        page,
+        limit: itemsPerPage,
+        setpointWatt,
+      };
+      if (sorterValue && Object.keys(sorterValue).length !== 0) {
+        const { column, asc } = sorterValue;
+        body = { ...body, sort: column, order: asc ? "asc" : "desc" };
+      }
+
+      getOverpasses(accessToken, body).then((users) => {
+        if (users.code && users.code === LOGIN_FAILED_CODE) {
+          dispatch(setLoginExpired());
+          return;
+        }
+        setItems(users.data);
+        setItemsPerPage(itemsPerPage);
+        setTotalRecords(Number(users.totalRecords));
+        setLoading(false);
+      });
+    },
+    [
+      /*page, itemsPerPage, sorterValue*/
+    ]
+  );
 
   if (!isAuth) {
     return <Redirect to="/" />;
-  } 
-  
+  }
+
   return (
     <>
       <CRow>
         <CCol xs={6} md={6} lg={6}>
           <h2>ข้อมูลสะพานลอย</h2>
         </CCol>
-        <CCol xs={6} md={6} lg={6}
+        <CCol
+          xs={6}
+          md={6}
+          lg={6}
           className="d-block d-sm-flex align-items-right justify-content-end mb-4"
         >
           <CButton color="primary" onClick={() => showModal("add")}>
@@ -317,8 +323,7 @@ const Overpasses = () => {
                   </CFormGroup>
                 </CCol>
               </CRow>
-              <CCol className="mt-3 d-block d-sm-flex justify-content-end"
-              >
+              <CCol className="mt-3 d-block d-sm-flex justify-content-end">
                 <CFormGroup>
                   <CButton
                     variant="outline"
@@ -352,32 +357,32 @@ const Overpasses = () => {
                 items={items}
                 fields={[
                   {
-                    key: 'id',
-                    label: 'ID',
+                    key: "id",
+                    label: "ID",
                   },
                   {
-                    key: 'name',
-                    label: 'ชื่อสะพานลอย',
+                    key: "name",
+                    label: "ชื่อสะพานลอย",
                   },
                   {
-                    key: 'location',
-                    label: 'สถานที่',
+                    key: "location",
+                    label: "สถานที่",
                   },
                   {
-                    key: 'districtName',
-                    label: 'ตำบล/แขวง',
+                    key: "districtName",
+                    label: "ตำบล/แขวง",
                   },
                   {
-                    key: 'amphurName',
-                    label: 'อำเภอ/เขค',
+                    key: "amphurName",
+                    label: "อำเภอ/เขค",
                   },
                   {
-                    key: 'provinceName',
-                    label: 'จังหวัด',
+                    key: "provinceName",
+                    label: "จังหวัด",
                   },
                   {
-                    key: 'status',
-                    label: 'สถานะ',
+                    key: "status",
+                    label: "สถานะ",
                   },
                   {
                     key: "action",
@@ -395,32 +400,20 @@ const Overpasses = () => {
                   action: (item) => (
                     <td className="py-2">
                       <CButtonGroup className="mr-2">
-                        <CTooltip content="Edit">
-                          <CLink
-                            size="sm"
-                            className="mr-3"
-                            onClick={() => showModal("edit", item)}
-                          >
-                            <CIcon
-                              size="sm"
-                              name="cil-pencil"
-                              className="text-dark"
-                            />
-                          </CLink>
-                        </CTooltip>
-                        <CTooltip content="Delete">
-                          <CLink
-                            size="sm"
-                            className="mr-2"
-                            onClick={() => showDeleteModal(item)}
-                          >
-                            <CIcon
-                              size="sm"
-                              name="cil-trash"
-                              className="text-dark"
-                            />
-                          </CLink>
-                        </CTooltip>
+                        <CButton
+                          size="sm"
+                          className="btn-github btn-brand mr-1 mb-1"
+                          onClick={() => showModal("edit", item)}
+                        >
+                          <CIcon size="sm" name="cil-pencil" />
+                        </CButton>
+                        <CButton
+                          size="sm"
+                          className="btn-youtube btn-brand mr-1 mb-1"
+                          onClick={() => showDeleteModal(item)}
+                        >
+                          <CIcon size="sm" name="cil-trash" />
+                        </CButton>
                       </CButtonGroup>
                     </td>
                   ),
@@ -491,11 +484,10 @@ const Overpasses = () => {
                   </div>
                 )}
                 <CModalHeader>
-                  <h5>Are you sure to delete user?</h5>
+                  <h5>คุณต้องการลบ ?</h5>
                 </CModalHeader>
                 <CModalBody>
-                  Deleting overpass <strong>{id}</strong> will permanently
-                  delete, this process cannot be recovered.
+                  ลบสะพานลอย <strong>{deleteOverpassName}</strong>
                 </CModalBody>
                 <CModalFooter>
                   <CButton color="light" onClick={handleClosedModal}>

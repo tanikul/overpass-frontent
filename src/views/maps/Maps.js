@@ -15,18 +15,8 @@ import {
   CListGroupItem,
   CFormGroup,
   CLabel,
-  CInput,
-  CFormText,
-  CDropdown,
-  CDropdownToggle,
-  CInputGroup,
-  CDropdownMenu,
-  CDropdownItem,
   CSelect,
   CButton,
-  CModal,
-  CModalBody,
-  CModalFooter,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import {
@@ -36,16 +26,12 @@ import {
   Marker,
   InfoWindow,
 } from "react-google-maps";
-import { ProBadge, DocsLink } from "src/reusable";
 import "./style.css";
-import { Button, CardHeader } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getMappingAddress } from "src/services/CommonService";
 import {
   searchOverpassesByUserId,
-  getOverpassesAll,
 } from "src/services/OverpassService";
-import { capitalize } from "src/utils/common";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { API_KEY_GOOGLE_MAP } from "../../config"
@@ -83,7 +69,7 @@ const ReactGoogleMaps = () => {
     body.append("provinceId", provinceRef.current.value);
     body.append("amphurId", amphurRef.current.value);
     body.append("districtId", districtRef.current.value);
-    body.append("overpassRef", overpassRef.current.value);
+    body.append("overpassId", overpassRef.current.value);
     searchOverpassesByUserId(accessToken, body)
       .then((response) => {
         if (response.status === 200) {
@@ -168,10 +154,6 @@ const ReactGoogleMaps = () => {
     );
   }, [locations]);
 
-  const toKebabCase = (str) => {
-    return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, "$1-$2").toLowerCase();
-  };
-
   const selectProvince = (id) => {
     let a = provinces.find((val) => {
       return val.key == id;
@@ -209,32 +191,40 @@ const ReactGoogleMaps = () => {
     let buffer = [];
     let row = [];
     let key = 0;
+    let j = 0;
     overpassDetails.forEach((item, i) => {
       let details = [];
       let color = "";
-      
+      let text = ""
       if (item.overpassStatus === "ON") {
         color = "success";
+        text = "text-success"
       } else if (item.overpassStatus === "OFF") {
         color = "danger";
+        text = "text-danger"
       } else if (item.overpassStatus === "WARNING") {
         color = "warning";
+        text = "text-warning"
       } else {
         color = "secondary";
+        text = "text-secondary"
       }
 
       let status = [];
       status.push(<b key={key++}>สถานะ: </b>);
-      if (item.overpassStatus !== null && item.overpassStatus !== "") {
-        status.push(item.overpassStatus);
+      
+      if (item.overpassStatus !== undefined && item.overpassStatus !== null && item.overpassStatus !== "") {
+        status.push(<i className={text} key={key++}>{item.overpassStatus}</i>);
       } else {
-        status.push("Not Available");
+        status.push(<i key={key++}>ไม่มีการติดตั้งอุปกรณ์</i>);
       }
       details.push(status);
       details.push(<br key={key++}/>);
 
       if (item.location !== null && item.location !== "") {
+        details.push(<b key={key++}>สถานที่: </b>);
         details.push(item.location);
+        details.push(<br key={key++} />);
       }
       if (item.districtName !== null && item.districtName != "") {
         details.push(<b key={key++}>แขวง/ตำบล: </b>);
@@ -261,11 +251,18 @@ const ReactGoogleMaps = () => {
           </CCard>
         </CCol>
       );
-      if (Math.ceil(i / 3) === 0) {
+      
+      j++
+      if (j === 3) {
         row.push(<CRow key={key++}>{buffer}</CRow>);
         buffer = [];
+        j = 0;
       }
     });
+    if(buffer.length > 0){
+      row.push(<CRow key={key++}>{buffer}</CRow>);
+      buffer = [];
+    }
     return row;
   }, [overpassDetails]);
 
@@ -293,11 +290,11 @@ const ReactGoogleMaps = () => {
         <CTabs activeTab="home">
           <CNav variant="tabs">
             <CNavItem>
-              <CNavLink data-tab="home">ปริมาณข้อมูลรายเดือน</CNavLink>
+              <CNavLink data-tab="home">แผนที่จุดสะพานลอย</CNavLink>
             </CNavItem>
             <CNavItem>
               <CNavLink data-tab="profile" className={"text-mute"}>
-                อัตราอุปกรณ์ไฟฟ้าติด-ดับ
+                รายละเอียดสะพานลอยตามพื้นที่
               </CNavLink>
             </CNavItem>
           </CNav>

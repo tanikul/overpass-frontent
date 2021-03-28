@@ -1,6 +1,7 @@
 import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_EXPIRED } from "../config/types";
 import { signIn } from "../services/AuthenService";
 import { redirect } from "./redirect";
+import { messaging, subscribeTokenToTopic } from "../init-fcm";
 
 const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
   const response = await signIn(userName, password).catch((err) => {
@@ -18,6 +19,7 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
     const accessToken = response.data.access_token;
     const role = JSON.parse(atob(accessToken.split(".")[1])).role;
     const overpassGroup = JSON.parse(atob(accessToken.split(".")[1])).overpassGroup;
+    const name = JSON.parse(atob(accessToken.split(".")[1])).name;
 
     dispatch({
       type: LOGIN_SUCCESS,
@@ -25,8 +27,25 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
         ...response.data,
         role,
         overpassGroup,
+        name,
       },
     });
+
+     if(messaging !== null && overpassGroup !== undefined){
+        try{
+          await messaging.requestPermission();
+          const token = await messaging.getToken();
+          await subscribeTokenToTopic(token, `overpass-${overpassGroup}`);
+        } catch (error) {
+          console.error(error);
+          //console.log("Unable to get permission to notify.", err);
+        }
+  
+        navigator.serviceWorker.addEventListener("message", (message) => {
+          this.showNotification(message);
+        });
+      }
+    
     dispatch(redirect("/dashboard"));
   }
 };

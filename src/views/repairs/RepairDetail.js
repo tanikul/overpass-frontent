@@ -1,16 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CListGroup,
-  CListGroupItem,
   CRow,
-  CLink,
-  CTabContent,
-  CTabPane,
   CNavLink,
   CFormGroup,
   CLabel,
@@ -20,16 +14,8 @@ import {
   CForm,
   CInvalidFeedback
 } from "@coreui/react";
-import { DocsLink } from "src/reusable";
-import { getOverpassStatusByGroupId } from "src/services/OverpassService";
-import { useDispatch, useSelector } from "react-redux";
-import Pagination from "@material-ui/lab/Pagination";
-import PaginationItem from "@material-ui/lab/PaginationItem";
+import { useSelector } from "react-redux";
 import Moment from "react-moment";
-
-import { Redirect } from "react-router-dom";
-import { redirect } from "../../actions/redirect";
-import { useHistory } from "react-router-dom";
 import {
   withScriptjs,
   withGoogleMap,
@@ -47,7 +33,7 @@ import Swal from "sweetalert2";
 import { API_KEY_GOOGLE_MAP } from "../../config";
 import DatePicker from "react-datepicker";
 import * as Yup from "yup";
-import { Formik, Field } from "formik";
+import { Formik } from "formik";
 import "react-datepicker/dist/react-datepicker.css";
 import { convertTimestampToDatetime } from "../../utils/common"
 
@@ -274,7 +260,6 @@ const RepairDetail = (match) => {
                   formikRef.current.setFieldValue("rootCuase", data[0].rootCuase);
                   formikRef.current.setFieldValue("fixed", data[0].fixed);
                   formikRef.current.setFieldValue("userFixed", data[0].userFixed);
-                  console.log(convertTimestampToDatetime(data[0].fixedDate));
                   setFixedDate(convertTimestampToDatetime(data[0].fixedDate));
                   setDisableRootCuase(true);
                   setDisableFixed(true);
@@ -283,9 +268,6 @@ const RepairDetail = (match) => {
                   setDisableSubmit(true);
                   setModal(false);
                 }
-                
-                //setOverpassData(data);
-                //genDataSets(data);
               }
             }
           );

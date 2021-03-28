@@ -1,66 +1,46 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Moment from "react-moment";
 import {
-  CBadge,
-  CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
   CCardFooter,
-  CCardHeader,
   CCol,
-  CProgress,
   CRow,
-  CCallout,
-  CWidgetProgress,
-  CWidgetIcon,
-  CWidgetProgressIcon,
-  CWidgetSimple,
   CNav,
   CNavItem,
   CNavLink,
   CTabs,
   CTabContent,
   CTabPane,
-  CFormGroup,
-  CLabel,
-  CInput,
-  CFormText,
   CLink,
   CListGroupItem,
   CListGroup,
 } from "@coreui/react";
 import {
   CChartBar,
-  CChartLine,
   CChartDoughnut,
-  CChartRadar,
-  CChartPie,
-  CChartPolarArea,
 } from "@coreui/react-chartjs";
-import CIcon from "@coreui/icons-react";
-import { DocsLink } from "src/reusable";
-import MainChartExample from "../charts/MainChartExample.js";
-import socketIOClient from "socket.io-client";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-import { LOCALE, PROD_API_URL } from "../../config";
+import { PROD_API_URL } from "../../config";
 import {
   getDataOverpass,
-  send
 } from "src/services/DashboardService";
-
-const DeviceStatus = lazy(() => import("../../reusable/DeviceStatus"));
-const WidgetsDropdown = lazy(() => import("../widgets/WidgetsDropdown.js"));
-const WidgetsBrand = lazy(() => import("../widgets/WidgetsBrand.js"));
+import { COLOR_AMPHUR } from "../../config"
 
 const Dashboard = () => {
   const accessToken = useSelector((state) => state.authen.access_token);
   const overpassGroup = useSelector((state) => state.authen.overpassGroup);
   const [overpassData, setOverpassData] = useState({});
   const [graph, setGraph] = useState([]);
-  
+  const [backgroundColorDonut, setBackgroundColorDonut] = useState([]);
+  const [dataDonut, setDataDonut] = useState([]);
+  const [labelsDonut, setLabelsDonut] = useState([]);
+  const [overpassOnMax, setOverpassOnMax] = useState(0);
+  const [overpassOffMax, setOverpassOffMax] = useState(0);
+  const [overpassOffAverage, setOverpassOffAverage] = useState(0);
+
   const genDataSets = (body) => {
     let data = [];
     let chk = graph.length === 0 ? true : false;
@@ -90,10 +70,7 @@ const Dashboard = () => {
       data[11] =
         body.overpassOffByMonth.Dec === null ? 0 : body.overpassOffByMonth.Dec;
       if (graph.length > 0) {
-        console.log('xxx');
-        console.log(data);
         data.forEach((item, i) => {
-          console.log(graph);
           if (item !== graph.graphOff.data[i]) {
             chk = true;
           }
@@ -101,7 +78,7 @@ const Dashboard = () => {
       }
     }
     const graphOff = {
-      label: "อุปกรณ์ไฟฟ้าดับ",
+      label: "สะพานลอยที่ไฟฟ้ามีปัญหา",
       backgroundColor: "#e55353",
       data: data,
       name: "graphOff",
@@ -142,21 +119,50 @@ const Dashboard = () => {
       }
     }
     const graphOn = {
-      label: "อุปกรณ์ไฟฟ้าติด",
+      label: "สะพานลอยที่ไฟฟ้าปกติ",
       backgroundColor: "#58ACFA",
       data: data,
       name: "graphOn",
     };
     if (chk) {
       setGraph([graphOff, graphOn]);
+      setOverpassOnMax(body.overpassOnMax);
+      setOverpassOffMax(body.overpassOffMax);
+      setOverpassOffAverage(body.overpassOffAverage);
     }
   };
+
+  const genDataDonutChart = (body) => {
+    let backgroundColor = []
+    let data = []
+    let labels = []
+    if(body.donutChart !== undefined && body.donutChart.length > 0){
+      body.donutChart.forEach((item, i) => {
+        backgroundColor[i] = COLOR_AMPHUR[item.amphur_id];
+        data[i] = item.cnt;
+        labels[i] = item.amphur_name;
+      })
+      setBackgroundColorDonut(backgroundColor)
+      setDataDonut(data)
+      setLabelsDonut(labels)
+     
+    }else{
+      backgroundColor[0] = "#807C7F";
+      data[0] = 0;
+      labels[0] = "ไม่มีอุปกรณ์ไฟฟ้าดับ";
+      setBackgroundColorDonut(backgroundColor)
+      setDataDonut(data)
+      setLabelsDonut(labels)
+    }
+    
+  }
 
   useEffect(() => {
     getDataOverpass(accessToken).then(({ status, data }) => {
       if(status === 200){
         setOverpassData(data);
         genDataSets(data);  
+        genDataDonutChart(data);
       }
     });
 
@@ -171,14 +177,14 @@ const Dashboard = () => {
 
     stompClient.connect(thisheaders, function (frame) {
       //console.log('Connected: ' + frame);
-      stompClient.subscribe("/topic/greetings", function (data) {
+      stompClient.subscribe(`/topic/greetings/${overpassGroup}`, function (data) {
         if (data !== null) {
-          console.log(data);
           const obj = JSON.parse(JSON.stringify(data));
           let body = JSON.parse(JSON.stringify(obj.body));
           body = JSON.parse(body);
           setOverpassData(body);
           genDataSets(body);
+          genDataDonutChart(body);
         } else {
           setOverpassData([]);
           genDataSets([]);
@@ -197,7 +203,7 @@ const Dashboard = () => {
               <center>
                 <h1>
                   {"overpassByZone" in overpassData
-                    ? overpassData.overpassByZone.cnt
+                    ? (overpassData.overpassByZone.cnt === null) ? 0 : overpassData.overpassByZone.cnt
                     : 0}
                 </h1>
               </center>
@@ -221,11 +227,11 @@ const Dashboard = () => {
               <center>
                 <h1>
                   {"overpassAll" in overpassData
-                    ? overpassData.overpassAll.cnt
+                    ? (overpassData.overpassAll.cnt === null) ? 0 : overpassData.overpassAll.cnt 
                     : 0}
                 </h1>
               </center>
-              <center className="text-info"><b>รวมอุปกรณ์ไฟฟ้าทั้งหมด</b></center>
+              <center className="text-info"><b>สะพานลอยทั้งหมด</b></center>
             </CCardBody>
             <CCardFooter className="bg-info text-white">
               <center>
@@ -245,11 +251,11 @@ const Dashboard = () => {
               <center>
                 <h1>
                   {"overpassOn" in overpassData
-                    ? overpassData.overpassOn.cnt
+                    ? (overpassData.overpassOn.cnt === null) ? 0 : overpassData.overpassOn.cnt
                     : 0}
                 </h1>
               </center>
-              <center className="text-success"><b>อุปกรณ์หลอดไฟฟ้าติด</b></center>
+              <center className="text-success"><b>สะพานลอยที่เปิดไฟ</b></center>
             </CCardBody>
             <CCardFooter className="bg-success">
               <center>
@@ -269,11 +275,11 @@ const Dashboard = () => {
               <center>
                 <h1>
                   {"overpassOff" in overpassData
-                    ? overpassData.overpassOff.cnt
+                    ? (overpassData.overpassOff.cnt === null) ? 0 : overpassData.overpassOff.cnt
                     : 0}
                 </h1>
               </center>
-              <center className="text-danger"><b>อุปกรณ์หลอดไฟฟ้าดับ</b></center>
+              <center className="text-danger"><b>สะพานลอยที่ปิดไฟ</b></center>
             </CCardBody>
             <CCardFooter className="bg-danger text-white">
               <center>
@@ -303,7 +309,7 @@ const Dashboard = () => {
                       </CNavItem>
                       <CNavItem>
                         <CNavLink data-tab="profile" className={"text-mute"}>
-                          อัตราอุปกรณ์ไฟฟ้าติด-ดับ
+                          อัตราอุปกรณ์ไฟฟ้าดับ
                         </CNavLink>
                       </CNavItem>
                     </CNav>
@@ -327,16 +333,11 @@ const Dashboard = () => {
                         <CChartDoughnut
                           datasets={[
                             {
-                              backgroundColor: [
-                                '#41B883',
-                                '#E46651',
-                                '#00D8FF',
-                                '#DD1B16'
-                              ],
-                              data: [40, 20, 80, 10]
+                              backgroundColor: backgroundColorDonut,
+                              data: dataDonut
                             }
                           ]}
-                          labels={['VueJs', 'EmberJs', 'ReactJs', 'AngularJs']}
+                          labels={labelsDonut}
                           options={{
                             tooltips: {
                               enabled: true
@@ -357,7 +358,7 @@ const Dashboard = () => {
               <b className={"float-left"}>Top Referrals</b>
               <b className="float-right">
                 <CLink
-                  href="https://coreui.io"
+                  href=""
                   target="_blank"
                 >
                   View Report
@@ -374,26 +375,29 @@ const Dashboard = () => {
               <span className="float-left">
                 อุปกรณ์ไฟฟ้าติดสูงสุด
               </span>
-              <span className="float-right">2 จุด</span>
+              <span style={{marginLeft:"2em"}}>{overpassOnMax}</span>
+              <span className="float-right"> จุด</span>
             </CListGroupItem>
             <CListGroupItem>
               <span className="float-left">
                 อุปกรณ์ไฟฟ้าดับสูงสุด
               </span>
-              <span className="float-right">2 จุด</span>
+              <span style={{marginLeft:"2em"}}>{overpassOffMax}</span>
+              <span className="float-right"> จุด</span>
             </CListGroupItem>
             <CListGroupItem>
               <span className="float-left">
                 อุปกรณ์ไฟฟ้าเสียร้อยละ
               </span>
-              <span className="float-right">2 จุด</span>
+              <span style={{marginLeft:"1.5em"}}>{overpassOffAverage}</span>
+              <span className="float-right">  จุด</span>
             </CListGroupItem>
-            <CListGroupItem>
+            {/*<CListGroupItem>
               <span className="float-left">
                 แจ้งเตือนข้อมูลสะสม
               </span>
               <span className="float-right">จำนวน</span>
-            </CListGroupItem>
+            </CListGroupItem>*/}
           </CListGroup>
         </CCol>
       </CRow>

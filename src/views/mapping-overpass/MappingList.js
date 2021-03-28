@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCol,
@@ -12,58 +11,44 @@ import {
   CForm,
   CLabel,
   CSelect,
-  CTooltip,
-  CLink,
-  CInput,
   CFormGroup,
   CModal,
   CModalBody,
   CModalFooter,
   CModalHeader,
-  CCollapse
+  CCollapse,
 } from "@coreui/react";
-import { TextMask, InputAdapter } from "react-text-mask-hoc";
 import CIcon from "@coreui/icons-react";
-import { deleteOverpass, getOverpasses } from "src/services/OverpassService";
-import { LOGIN_FAILED_CODE, roleUserControl, userFullAccess } from "src/config";
+import { LOGIN_FAILED_CODE } from "src/config";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import {
-  getMappingAddress,
-} from "src/services/CommonService";
-import { capitalize } from "src/utils/common";
+import { getMappingAddress } from "src/services/CommonService";
 import { setLoginExpired } from "src/actions/authen";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "spinkit/spinkit.min.css";
 import { redirect } from "../../actions/redirect";
-import { getsearchGroupMappingOverpasses, getMappingOverPassAll, deleteMappingOverpasses } from "src/services/MappingService";
-import ls from 'local-storage'
+import {
+  getsearchGroupMappingOverpasses,
+  getMappingOverPassAll,
+  deleteMappingOverpasses,
+} from "src/services/MappingService";
 import { useHistory } from "react-router-dom";
 
 const MySwal = withReactContent(Swal);
 
-const usePrevious = (value) => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-};
-
 const MappingList = () => {
-  
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.authen.isAuth);
   const accessToken = useSelector((state) => state.authen.access_token);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [modal, setModal] = useState(false);
   const [groupId, setGroupId] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [items, setItems] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [id, setId] = useState("");
+  const [deleteGroupName, setDeleteGroupName] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [sorterValue, setSorterValue] = useState();
@@ -79,8 +64,9 @@ const MappingList = () => {
     }
   };
 
-  const showDeleteModal = (item) => {console.log(item);
+  const showDeleteModal = (item) => {
     setId(item.groupId);
+    setDeleteGroupName(item.groupName);
     setDeleteModal(!deleteModal);
   };
 
@@ -88,14 +74,13 @@ const MappingList = () => {
     setDeleteModal(false);
   };
 
-
   const handleSearch = () => {
     setLoading(true);
     let body = {
       page,
       limit: itemsPerPage,
       filter: {
-        id: groupId
+        id: groupId,
       },
     };
 
@@ -103,7 +88,7 @@ const MappingList = () => {
       const { column, asc } = sorterValue;
       body = { ...body, sort: column, order: asc ? "asc" : "desc" };
     }
-    
+
     getsearchGroupMappingOverpasses(accessToken, body).then((users) => {
       if (users.code && users.code === LOGIN_FAILED_CODE) {
         dispatch(setLoginExpired());
@@ -123,10 +108,10 @@ const MappingList = () => {
     deleteMappingOverpasses(accessToken, body).then((response) => {
       if (response.status === 200) {
         setDeleteLoading(false);
-        setReload((reload) ? false : true);
+        setReload(reload ? false : true);
         MySwal.fire({
           title: "Success",
-          text: "Deleted user successfully  ",
+          text: "ลบกลุ่มสำเร็จ  ",
           icon: "success",
           didClose: () => {
             setDeleteModal(false);
@@ -137,7 +122,7 @@ const MappingList = () => {
         setDeleteLoading(false);
         MySwal.fire({
           title: "Failed",
-          text: "Cannot delete user",
+          text: "ไม่สามารถลบได้ เนื่องจากมีผู้ใช้งานผูกกับกลุ่มนี้อยู่",
           icon: "error",
           didClose: () => {
             setDeleteModal(false);
@@ -148,69 +133,48 @@ const MappingList = () => {
   };
 
   const toggleDetails = (index) => {
-    const position = details.indexOf(index)
-    let newDetails = details.slice()
+    const position = details.indexOf(index);
+    let newDetails = details.slice();
     if (position !== -1) {
-      newDetails.splice(position, 1)
+      newDetails.splice(position, 1);
     } else {
-      newDetails = [...details, index]
-    } 
-    setDetails(newDetails)
-  }
+      newDetails = [...details, index];
+    }
+    setDetails(newDetails);
+  };
 
   useEffect(() => {
-
-    if(provinces.length === 0){
+    if (provinces.length === 0) {
       getMappingAddress(accessToken).then(({ status, data }) => {
         return status === 200 ? setProvinces(data) : setProvinces([]);
       });
     }
-    
+
     getMappingOverPassAll(accessToken).then(({ status, data }) => {
       return status === 200 ? setGroupList(data) : setGroupList([]);
     });
-  
-    /*setLoading(true);
-    let body = {
-      page,
-      limit: itemsPerPage,
-    };
-    if (sorterValue && Object.keys(sorterValue).length !== 0) {
-      const { column, asc } = sorterValue;
-      body = { ...body, sort: column, order: asc ? "asc" : "desc" };
-    }
-    getsearchGroupMappingOverpasses(accessToken, body).then((users) => {
-      if (users.code && users.code === LOGIN_FAILED_CODE) {
-        dispatch(setLoginExpired());
-        return;
-      }
-      setItems(users.data);
-      setItemsPerPage(itemsPerPage);
-      setTotalRecords(Number(users.totalRecords));
-      setLoading(false);
-    });*/
+
     handleSearch();
   }, [reload]);
 
   if (!isAuth) {
     return <Redirect to="/" />;
-  } 
+  }
 
   const getoAdd = () => {
     dispatch(redirect("/mapping-overpass/add"));
     history.push({
-      pathname: "/mapping-overpass/add"
+      pathname: "/mapping-overpass/add",
     });
-  }
+  };
 
   const getoEdit = (item) => {
-    dispatch(redirect(`/mapping-overpass/edit/${item.groupId}` ));
+    dispatch(redirect(`/mapping-overpass/edit/${item.groupId}`));
     history.push({
-      pathname: `/mapping-overpass/edit/${item.groupId}` ,
-      //data: { 'mode': 'edit', 'data': item } 
-    })
-  }
-  
+      pathname: `/mapping-overpass/edit/${item.groupId}`,
+      //data: { 'mode': 'edit', 'data': item }
+    });
+  };
 
   return (
     <>
@@ -224,8 +188,8 @@ const MappingList = () => {
         >
           <CButton color="primary" onClick={() => getoAdd()}>
             <CIcon size="sm" name="cil-user-plus" className=" mr-1" />
-            เพิ่มกลุ่มสะพานลอย 
-            </CButton>
+            เพิ่มกลุ่มสะพานลอย
+          </CButton>
         </CCol>
       </CRow>
       <CRow className="justify-content-center">
@@ -233,9 +197,7 @@ const MappingList = () => {
           <CCard>
             <CCardBody>
               <CRow>
-                <CCol className="mb-3 font-weight-bold">
-                  ค้นหา
-                </CCol>
+                <CCol className="mb-3 font-weight-bold">ค้นหา</CCol>
               </CRow>
               <CRow>
                 <CCol>
@@ -254,28 +216,25 @@ const MappingList = () => {
                         </option>
                       ))}
                     </CSelect>
-                    
                   </CFormGroup>
                   <CButton
-                      variant="outline"
-                      color="secondary"
-                      className="px-4 text-black-50"
-                    >
-                      Reset
-                    </CButton>
-                    <CButton
-                      variant="outline"
-                      color="primary"
-                      className="ml-3 px-3"
-                      onClick={handleSearch}
-                    >
-                      Search
-                      <CIcon size="sm" name="cil-search" className="ml-2" />
-                    </CButton>
+                    variant="outline"
+                    color="secondary"
+                    className="px-4 text-black-50"
+                  >
+                    Reset
+                  </CButton>
+                  <CButton
+                    variant="outline"
+                    color="primary"
+                    className="ml-3 px-3"
+                    onClick={handleSearch}
+                  >
+                    Search
+                    <CIcon size="sm" name="cil-search" className="ml-2" />
+                  </CButton>
                 </CCol>
-                
               </CRow>
-              
             </CCardBody>
           </CCard>
         </CCol>
@@ -288,95 +247,103 @@ const MappingList = () => {
                 loading={loading}
                 items={items}
                 fields={[
-                  { key: 'groupName', 
-                    _style: { width: '89%'}, 
-                    label: 'ชื่อกลุ่ม'
+                  {
+                    key: "groupName",
+                    _style: { width: "89%" },
+                    label: "ชื่อกลุ่ม",
                   },
                   {
-                    key: 'show_details',
-                    label: '',
-                    _style: { width: '1%' },
-                    filter: false
+                    key: "show_details",
+                    label: "",
+                    _style: { width: "1%" },
+                    filter: false,
                   },
                   {
-                    key: 'edit',
-                    label: '',
-                    _style: { width: '10%' },
-                    filter: false
-                  }]}
-                scopedSlots = {{
-                  'show_details':
-                    item => {
-                      return (
-                        <td className="py-2">
-                          <CButton
-                            color="primary"
-                            variant="outline"
-                            shape="square"
-                            size="sm"
-                            onClick={() => { toggleDetails(item.groupId) }}
-                          >
-                            { details.includes(item.groupId) ? 'Hide' : 'Show' }
-                          </CButton>
-                        </td>
-                      )
-                    },
-                  'edit':
-                  item => {
+                    key: "edit",
+                    label: "",
+                    _style: { width: "10%" },
+                    filter: false,
+                  },
+                ]}
+                scopedSlots={{
+                  show_details: (item) => {
+                    return (
+                      <td className="py-2">
+                        <CButton
+                          color="primary"
+                          variant="outline"
+                          shape="square"
+                          size="sm"
+                          onClick={() => {
+                            toggleDetails(item.groupId);
+                          }}
+                        >
+                          {details.includes(item.groupId) ? "Hide" : "Show"}
+                        </CButton>
+                      </td>
+                    );
+                  },
+                  edit: (item) => {
                     return (
                       <td className="py-2">
                         <CButtonGroup className="mr-2">
-                          <CTooltip content="Edit">
-                            <CLink
-                              size="sm"
-                              className="mr-3"
-                              onClick={() => getoEdit(item)}
-                            >
-                              <CIcon
-                                size="sm"
-                                name="cil-pencil"
-                                className="text-dark"
-                              />
-                            </CLink>
-                          </CTooltip>
-                          <CTooltip content="Delete">
-                            <CLink
-                              size="sm"
-                              className="mr-2"
-                              onClick={() => showDeleteModal(item)}
-                            >
-                              <CIcon
-                                size="sm"
-                                name="cil-trash"
-                                className="text-dark"
-                              />
-                            </CLink>
-                          </CTooltip>
+                          <CButton
+                            size="sm"
+                            className="btn-github btn-brand mr-1 mb-1"
+                            onClick={() => getoEdit(item)}
+                          >
+                            <CIcon size="sm" name="cil-pencil" />
+                          </CButton>
+                          <CButton
+                            size="sm"
+                            className="btn-youtube btn-brand mr-1 mb-1"
+                            onClick={() => showDeleteModal(item)}
+                          >
+                            <CIcon size="sm" name="cil-trash" />
+                          </CButton>
                         </CButtonGroup>
                       </td>
-                    )
+                    );
                   },
-                  'details':
-                    item => {
-                      return (
-                        <CCollapse show={details.includes(item.groupId)}>
-                          <CCardBody>
-                            <CDataTable
-                              items={item.overpasses}
-                              fields={[ 
-                                { key: 'id', label: 'ID', filter: false },
-                                { key: 'name', label: 'ชื่อสะพานลอย', filter: false },
-                                { key: 'location', label: 'สถานที่', filter: false },
-                                { key: 'districtName', label: 'แขวง/ตำบล', filter: false },
-                                { key: 'amphurName', label: 'เขต/อำเภอ', filter: false },
-                                { key: 'provinceName', label: 'จังหวัด', filter: false },
-                              ]}
-                              >
-                            </CDataTable>
-                          </CCardBody>
-                        </CCollapse>
-                    )
-                  }
+                  details: (item) => {
+                    return (
+                      <CCollapse show={details.includes(item.groupId)}>
+                        <CCardBody>
+                          <CDataTable
+                            items={item.overpasses}
+                            fields={[
+                              { key: "id", label: "ID", filter: false },
+                              {
+                                key: "name",
+                                label: "ชื่อสะพานลอย",
+                                filter: false,
+                              },
+                              {
+                                key: "location",
+                                label: "สถานที่",
+                                filter: false,
+                              },
+                              {
+                                key: "districtName",
+                                label: "แขวง/ตำบล",
+                                filter: false,
+                              },
+                              {
+                                key: "amphurName",
+                                label: "เขต/อำเภอ",
+                                filter: false,
+                              },
+                              {
+                                key: "provinceName",
+                                label: "จังหวัด",
+                                filter: false,
+                              },
+                            ]}
+                          ></CDataTable>
+                        </CCardBody>
+                      </CCollapse>
+                    );
+                  },
                 }}
                 hover
                 itemsPerPage={itemsPerPage}
@@ -410,7 +377,7 @@ const MappingList = () => {
                   />
                 </CCol>
               </CRow>
-              
+
               <CModal
                 centered
                 show={deleteModal}
@@ -436,11 +403,10 @@ const MappingList = () => {
                   </div>
                 )}
                 <CModalHeader>
-                  <h5>Are you sure to delete user?</h5>
+                  <h5>คุณต้องการลบ ?</h5>
                 </CModalHeader>
                 <CModalBody>
-                  Deleting overpass <strong>{id}</strong> will permanently
-                  delete, this process cannot be recovered.
+                  ลบกลุ่ม <strong>{deleteGroupName}</strong>
                 </CModalBody>
                 <CModalFooter>
                   <CButton color="light" onClick={handleClosedModal}>
@@ -448,7 +414,9 @@ const MappingList = () => {
                   </CButton>
                   <CButton
                     color="danger"
-                    onClick={() => { handleDeleteOverpass()}}
+                    onClick={() => {
+                      handleDeleteOverpass();
+                    }}
                     disabled={deleteLoading}
                   >
                     Confirm

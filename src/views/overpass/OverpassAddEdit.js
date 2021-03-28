@@ -36,7 +36,7 @@ const OverpassAddEdit = (props) => {
     provinces,
     statuses
   } = props;
-
+console.log(props);
   const formikRef = useRef();
   const isEdit = action === "add" ? false : true;
   const accessToken = useSelector((state) => state.authen.access_token);

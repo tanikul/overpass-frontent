@@ -13,7 +13,6 @@ const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster')
 const Calendar = React.lazy(() => import('./views/plugins/calendar/Calendar'));
 const Draggable = React.lazy(() => import('./views/plugins/draggable/Draggable'));
 const Spinners = React.lazy(() => import('./views/plugins/spinners/Spinners'));
-const AdvancedTables = React.lazy(() => import('./views/tables/advanced-tables/AdvancedTables'));
 //const Tables = React.lazy(() => import('./views/tables/tables/Tables'));
 //const LoadingButtons = React.lazy(() => import('./views/buttons/loading-buttons'));
 
@@ -49,7 +48,6 @@ const Colors = React.lazy(() => import('./views/theme/colors/Colors'));
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'));
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
 const Users = React.lazy(() => import('./views/users/Users'));
-const User = React.lazy(() => import('./views/users/User'));
 const Overpasses = React.lazy(() => import('./views/overpass/Overpasses'));
 const MappingOverpass = React.lazy(() => import('./views/mapping-overpass/MappingList'));
 const MappingOverpassAdd = React.lazy(() => import('./views/mapping-overpass/MappingForms'));
@@ -57,10 +55,11 @@ const MappingOverpassEdit = React.lazy(() => import('./views/mapping-overpass/Ma
 const Maps = React.lazy(() => import('./views/maps/Maps'));
 const Repairs = React.lazy(() => import('./views/repairs/Repairs'));
 const RepairDetail = React.lazy(() => import('./views/repairs/RepairDetail'));
+const BulbLight = React.lazy(() => import('./views/bulb/BulbLight'));
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/', exact: true, name: 'หน้าแรก' },
+  { path: '/dashboard', name: 'แผงงานวิเคราะห์ข้อมูล', component: Dashboard },
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
@@ -114,18 +113,19 @@ const routes = [
   { path: '/apps', name: 'Apps', component: Invoice, exact: true },
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
-  { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/users', exact: true,  name: 'จัดการผู้ใช้งานในระบบ', component: Users },
   { path: '/apps/email/inbox', exact: true, name: 'Inbox' },
   { path: '/apps/email/compose', exact: true, name: 'Compose' },
   { path: '/apps/email/message', exact: true, name: 'Message' },
-  { path: '/overpass', exact: true,  name: 'Overpasses', component: Overpasses },
-  { path: '/mapping-overpass', exact: true,  name: 'Mapping Overpass', component: MappingOverpass },
-  { path: '/mapping-overpass/:mode', exact: true,  name: 'Mapping Overpass', component: MappingOverpassAdd },
-  { path: '/mapping-overpass/:mode/:id', exact: true,  name: 'Mapping Overpass', component: MappingOverpassEdit },
-  { path: '/maps', exact: true,  name: 'Maps', component: Maps },
-  { path: '/repairs', exact: true,  name: 'Repairs', component: Repairs },
-  { path: '/repairs/:id', exact: true,  name: 'RepairDetail', component: RepairDetail },
+  { path: '/overpass', exact: true,  name: 'สะพานลอย', component: Overpasses },
+  { path: '/mapping-overpass', exact: true,  name: 'จับกลุ่มสะพานลอย', component: MappingOverpass },
+  { path: '/mapping-overpass/:mode', exact: true,  name: '', component: MappingOverpassAdd },
+  { path: '/mapping-overpass/:mode/:id', exact: true,  name: '', component: MappingOverpassEdit },
+  { path: '/maps', exact: true,  name: 'เขตพื้นที่และอุปกรณ์', component: Maps },
+  { path: '/repairs', exact: true,  name: 'รายการแจ้งซ่อม', component: Repairs },
+  { path: '/repairs/:id', exact: true,  name: '', component: RepairDetail },
+  { path: '/light-bulb/', exact: true,  name: '', component: BulbLight },
+  
 ]
 
 export default routes;

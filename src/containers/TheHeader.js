@@ -56,7 +56,9 @@ const TheHeader = () => {
       <CHeaderNav className="d-md-down-none mr-auto" />
 
       <CHeaderNav className="px-3">
+        <TheHeaderDropdownMssg/>
         <TheHeaderDropdown />
+        
       </CHeaderNav>
 
       <CSubheader className="px-3 justify-content-between">

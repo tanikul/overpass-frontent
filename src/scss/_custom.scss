@@ -51,3 +51,22 @@ body {
 .accent-warning-custom {
     border-left: 4px solid #f9b115;
 }
+
+.notification-info:before {
+    content: "" !important;
+}
+
+.notification-info {
+    background: #a8adb500 !important;
+    border-left: 4px solid #24c153 !important;
+    word-break: break-all;
+    color: #848484 !important;
+}
+
+.toast-header-info {
+    border-left: 4px solid #24c153 !important;
+}
+
+.accent-warning-info {
+    border-left: 4px solid #24c153;
+}
