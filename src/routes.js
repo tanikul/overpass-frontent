@@ -124,7 +124,7 @@ const routes = [
   { path: '/maps', exact: true,  name: 'เขตพื้นที่และอุปกรณ์', component: Maps },
   { path: '/repairs', exact: true,  name: 'รายการแจ้งซ่อม', component: Repairs },
   { path: '/repairs/:id', exact: true,  name: '', component: RepairDetail },
-  { path: '/light-bulb/', exact: true,  name: '', component: BulbLight },
+  { path: '/light-bulb/', exact: true,  name: 'ตั้งค่าหลอดไฟ', component: BulbLight },
   
 ]
 
