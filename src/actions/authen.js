@@ -20,7 +20,8 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
     const role = JSON.parse(atob(accessToken.split(".")[1])).role;
     const overpassGroup = JSON.parse(atob(accessToken.split(".")[1])).overpassGroup;
     const name = JSON.parse(atob(accessToken.split(".")[1])).name;
-
+    const imageProfile = (JSON.parse(atob(accessToken.split(".")[1])).imageProfile === undefined) ? "" : JSON.parse(atob(accessToken.split(".")[1])).imageProfile;
+console.log(imageProfile);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: {
@@ -28,6 +29,7 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
         role,
         overpassGroup,
         name,
+        imageProfile,
       },
     });
 

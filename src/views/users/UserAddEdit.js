@@ -24,6 +24,8 @@ import { roleUserControl, userFullAccess } from "src/config";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Redirect } from "react-router-dom";
+import UploadPreview from "src/components/UploadPreview"
+
 
 const MySwal = withReactContent(Swal);
 
@@ -45,6 +47,7 @@ const UserAddEdit = (props) => {
   const [loading, setLoading] = useState(false);
   const userRole = useSelector((state) => state.authen.role);
   const [groupList, setGroupList] = useState([]);
+  const [imageProfile, setImageProfile] = useState(null);
 
   const addUserSchema = () => {
     let schema = {
@@ -93,25 +96,24 @@ const UserAddEdit = (props) => {
       groupId,
       status
     } = values;
+    let body = new FormData();
+    body.append("username", username);
+    body.append("prefix", prefix);
+    body.append("firstName", firstName);
+    body.append("lastName", lastName);
+    body.append("role", role);
+    body.append("email", email);
+    body.append("lineId", lineId);
+    body.append("mobileNo", mobileNo);
+    body.append("groupId", groupId);
+    body.append("status", status);
+    body.append("imageProfile", imageProfile);
 
-    let body = {
-      username,
-      prefix: Number(prefix),
-      firstName,
-      lastName,
-      role,
-      email,
-      lineId,
-      mobileNo,
-      groupId,
-      status
-    };
-
-    if (userFullAccess.includes(userRole)) {
+    /*if (userFullAccess.includes(userRole)) {
       body = {
         ...body,
       };
-    }
+    }*/
     if(isEdit){
       editUser(accessToken, body)
       .then((response) => {
@@ -175,6 +177,11 @@ const UserAddEdit = (props) => {
     }
   };
 
+  const changeImageProfile = e => {
+    console.log(e)
+    setImageProfile(e)
+  }
+
   useEffect(() => {
     if(groupList.length === 0){
       getMappingOverPassAll(accessToken).then(({ status, data }) => {
@@ -195,6 +202,7 @@ const UserAddEdit = (props) => {
      formikRef.current.setFieldValue("role", itemDetail.role);
      formikRef.current.setFieldValue("groupId", itemDetail.groupId);
      formikRef.current.setFieldValue("status", itemDetail.status);
+     //formikRef.current.setFieldValue("imageProfile", PATH_IMAGE_PROFILE + "/" + itemDetail.iamge);
     }
   }, [modal]);
 
@@ -218,7 +226,7 @@ const UserAddEdit = (props) => {
         mobileNo: "",
         role: "",
         groupId: "",
-        status: "ACTIVE"
+        status: "ACTIVE",
       }}
       validationSchema={addUserSchema}
       onSubmit={handleAdd}
@@ -534,6 +542,12 @@ const UserAddEdit = (props) => {
                       <CInvalidFeedback>{errors.groupId}</CInvalidFeedback>
                     </CCol>
                   </CFormGroup>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol xs={12} md={12} lg={12}>
+                
+                 {/* <UploadPreview onInputChange={changeImageProfile}/>*/}
                 </CCol>
               </CRow>
             </CModalBody>

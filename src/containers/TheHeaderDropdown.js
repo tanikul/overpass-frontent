@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   CDropdown,
   CDropdownItem,
@@ -36,6 +36,7 @@ import { Formik } from "formik";
 import { getPrefixes } from "src/services/CommonService";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { PATH_IMAGE_PROFILE } from "src/config"
 
 const TheHeaderDropdown = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,8 @@ const TheHeaderDropdown = () => {
   const [prefixes, setPrefixes] = useState([]);
   const formikRef = useRef();
   const MySwal = withReactContent(Swal);
+  const imageProfile = useSelector((state) => state.authen.imageProfile);
+  const [pictureProfile, setPictureProfile] = useState(null);
 
   const editUserProfileSchema = () => {
     let schema = {
@@ -103,6 +106,7 @@ const TheHeaderDropdown = () => {
       lineId,
       mobileNo,
     };
+    
     updateUserProfile(accessToken, body)
       .then((response) => {
         if (response.status === 200) {
@@ -156,17 +160,24 @@ const TheHeaderDropdown = () => {
     });
   };
 
+  useEffect(() => {
+    setPictureProfile((imageProfile === "" || imageProfile === null) ? "/avatars/avatar.jpg" : PATH_IMAGE_PROFILE + "/" + imageProfile);
+  },[])
+  
   if (!isAuth) {
     return <Redirect to={redirectTo} push={true} />;
   }
+  
 
   return (
-    <>
+    
+     <>
       <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
         <CDropdownToggle className="c-header-nav-link" caret={false}>
           <div className="c-avatar">
+          
             <CImg
-              src={"/avatars/avatar.jpg"}
+              src={pictureProfile}
               className="c-avatar-img"
             />
           </div>

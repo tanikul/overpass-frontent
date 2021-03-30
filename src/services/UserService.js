@@ -20,7 +20,8 @@ export const getUsers = async (token, body = {}) => {
 
 export const editUser = async (token, body = {}) => {
   const headers = {
-    Authorization: `Bearer ${token}`,
+    "Authorization": `Bearer ${token}`,
+    "Content-type": "multipart/form-data"
   };
 
   try {
@@ -33,7 +34,8 @@ export const editUser = async (token, body = {}) => {
 
 export const addUser = async (token, body = {}) => {
   const headers = {
-    Authorization: `Bearer ${token}`,
+    "Authorization": `Bearer ${token}`,
+    "Content-type": "multipart/form-data"
   };
 
   try {

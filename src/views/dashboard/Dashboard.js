@@ -279,7 +279,7 @@ const Dashboard = () => {
                     : 0}
                 </h1>
               </center>
-              <center className="text-danger"><b>สะพานลอยที่ปิดไฟ</b></center>
+              <center className="text-danger"><b>สะพานลอยที่ปิดไฟ/มีไฟดับ</b></center>
             </CCardBody>
             <CCardFooter className="bg-danger text-white">
               <center>

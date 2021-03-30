@@ -19,6 +19,8 @@ export const USER_ROLE = "USER";
 
 export const API_KEY_GOOGLE_MAP = "AIzaSyANe0OjAC6ILZQGF9udm0BlN0QHW1JMMME";
 
+export const PATH_IMAGE_PROFILE = "/Users/tanikulsakulworrawit/Documents/test_image";
+
 export const COLOR_AMPHUR = {
   "1": "#01DFD7",
   "2": "#0040FF",

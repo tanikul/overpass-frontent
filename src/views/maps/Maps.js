@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
 import {
   CCard,
   CCardHeader,
@@ -35,6 +35,8 @@ import {
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { API_KEY_GOOGLE_MAP } from "../../config"
+import ApexCharts from 'apexcharts'
+import SemiCircleProgressBar from "react-progressbar-semicircle";
 
 // To use the Google Maps JavaScript API, you must register your app project on the Google API Console and get a Google API key which you can add to your app
 
@@ -47,6 +49,7 @@ const ReactGoogleMaps = () => {
   const [locations, setLocations] = useState([]);
   const [overpasses, setOverpasses] = useState([]);
   const [overpassDetails, setOverpassDetails] = useState([]);
+  const [graphDetail, setGraphDetail] = useState([]);
 
   // local
   //const apiKey = "AIzaSyASyYRBZmULmrmw_P9kgr7_266OhFNinPA";
@@ -187,6 +190,68 @@ const ReactGoogleMaps = () => {
     setLocations(response);
   };
 
+  const xxx = () => {
+    var options = {
+      series: [76],
+      chart: {
+      type: 'radialBar',
+      offsetY: -20,
+      sparkline: {
+        enabled: true
+      }
+    },
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        track: {
+          background: "#e7e7e7",
+          strokeWidth: '97%',
+          margin: 5, // margin is in pixels
+          dropShadow: {
+            enabled: true,
+            top: 2,
+            left: 0,
+            color: '#999',
+            opacity: 1,
+            blur: 2
+          }
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            offsetY: -2,
+            fontSize: '22px'
+          }
+        }
+      }
+    },
+    grid: {
+      padding: {
+        top: -10
+      }
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'light',
+        shadeIntensity: 0.4,
+        inverseColors: false,
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 50, 53, 91]
+      },
+    },
+    labels: ['Average Results'],
+    };
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    //console.log(chart.render());
+    return chart.render()
+    
+  }
+
   const getOverpassDetailsPage = useMemo(() => {
     let buffer = [];
     let row = [];
@@ -214,7 +279,7 @@ const ReactGoogleMaps = () => {
       status.push(<b key={key++}>สถานะ: </b>);
       
       if (item.overpassStatus !== undefined && item.overpassStatus !== null && item.overpassStatus !== "") {
-        status.push(<i className={text} key={key++}>{item.overpassStatus}</i>);
+        status.push(<i className={text} key={key++}><b key={key++}>{item.overpassStatus}</b></i>);
       } else {
         status.push(<i key={key++}>ไม่มีการติดตั้งอุปกรณ์</i>);
       }
@@ -241,13 +306,31 @@ const ReactGoogleMaps = () => {
         details.push(item.provinceName);
         details.push(<br key={key++}/>);
       }
+      let percent = 0;
+      let textDisplay = "";
+      let stroke = "#e55353";
+      textDisplay = percent + "/" + item.lightBulbCnt + " หลอด";
+      if(item.overpassStatus === 'ON'){
+        percent = 100;
+        textDisplay = item.lightBulbCnt + "/" + item.lightBulbCnt + " หลอด";
+        stroke = "#02B732";
+      }else if(item.overpassStatus === 'WARNING'){
+        let full = item.lightBulbCnt * item.lightBulb.watt;
+        percent = Math.floor(item.watt / item.lightBulb.watt)
+        console.log(Math.floor(65.1));
+        textDisplay = percent + "/" + item.lightBulbCnt + " หลอด";
+        stroke = "#f9b115"
+      }
       buffer.push(
         <CCol xs="12" sm="6" md="4" key={key++}>
           <CCard accentColor={color} key={key++}>
             <CCardHeader key={key++}>
               <b key={key++}>{item.name}</b>
             </CCardHeader>
-            <CCardBody key={key++}>{details}</CCardBody>
+            <CCardBody key={key++}>
+            <SemiCircleProgressBar percentage={percent} showPercentValue showPercentValue={false} stroke={stroke} />
+            <div style={{textAlign: "center"}}>{textDisplay}</div><br/>
+              {details}</CCardBody>
           </CCard>
         </CCol>
       );
@@ -266,6 +349,12 @@ const ReactGoogleMaps = () => {
     return row;
   }, [overpassDetails]);
 
+  useLayoutEffect(() => {
+    //console.log(document.getElementById("#chart"))
+  })
+  const ccc = () => {
+    console.log(document.getElementById("#chart"))
+  }
   useEffect(() => {
     if (provinces.length === 0) {
       getMappingAddress(accessToken).then(({ status, data }) => {
@@ -282,9 +371,12 @@ const ReactGoogleMaps = () => {
         setLocationData([]);
       }
     });
+    
   }, []);
 
-  return (
+  return <>
+  <div id="chart">
+</div>
     <CRow>
       <CCol xs="12" md="9" sm="12" className="mb-4">
         <CTabs activeTab="home">
@@ -306,7 +398,7 @@ const ReactGoogleMaps = () => {
             </CTabPane>
             <CTabPane data-tab="profile">
               <CCard>
-                <CCardBody>{getOverpassDetailsPage}</CCardBody>
+                <CCardBody>{getOverpassDetailsPage}{ccc()}</CCardBody>
               </CCard>
             </CTabPane>
           </CTabContent>
@@ -411,7 +503,7 @@ const ReactGoogleMaps = () => {
         </CListGroup>
       </CCol>
     </CRow>
-  )
+  </>
 };
 
 export default ReactGoogleMaps;
