@@ -28,6 +28,8 @@ import {
   getDataOverpass,
 } from "src/services/DashboardService";
 import { COLOR_AMPHUR } from "../../config"
+import ApexCharts from 'apexcharts'
+import Chart from "react-apexcharts";
 
 const Dashboard = () => {
   const accessToken = useSelector((state) => state.authen.access_token);
@@ -40,10 +42,14 @@ const Dashboard = () => {
   const [overpassOnMax, setOverpassOnMax] = useState(0);
   const [overpassOffMax, setOverpassOffMax] = useState(0);
   const [overpassOffAverage, setOverpassOffAverage] = useState(0);
+  const [graphOptions, setGraphOptions] = useState({options: {}, series: []});
+  const [graphSeries, setGraphSeries] = useState([]);
 
   const genDataSets = (body) => {
     let data = [];
-    let chk = graph.length === 0 ? true : false;
+    let max = 0;
+    let _array = []
+    let chk = false;
     if (body !== []) {
       data[0] =
         body.overpassOffByMonth.Jan === null ? 0 : body.overpassOffByMonth.Jan;
@@ -77,6 +83,9 @@ const Dashboard = () => {
         });
       }
     }
+    _array = data;
+    
+    const dataOff = data
     const graphOff = {
       label: "สะพานลอยที่ไฟฟ้ามีปัญหา",
       backgroundColor: "#e55353",
@@ -118,18 +127,53 @@ const Dashboard = () => {
         });
       }
     }
+    _array.concat(data)
+    max = (Math.max.apply(Math,_array))
     const graphOn = {
       label: "สะพานลอยที่ไฟฟ้าปกติ",
       backgroundColor: "#58ACFA",
       data: data,
       name: "graphOn",
     };
-    if (chk) {
-      setGraph([graphOff, graphOn]);
+    const dataOn = data
+    const po = {
+      
+      options: {
+        chart: {
+          id: "basic-bar"
+        },
+        xaxis: {
+          categories: ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค'],
+        },
+        yaxis: {
+          min: 0,
+          max: max + 5,
+          forceNiceScale: true,
+          decimalsInFloat: undefined
+        },
+        colors: ["#e55353", "#58ACFA"],
+      },
+      
+      series: [
+        {
+          name: "สะพานลอยที่มีหลอดไฟดับ",
+          data: dataOff
+        },
+        {
+          name: "สะพานลอยที่ไฟฟ้าปกติ",
+          data: dataOn
+        }
+      ]
+    };
+    
+    
+    //if (chk) {
+      setGraphOptions(po)
+      //setGraph([graphOff, graphOn]);
       setOverpassOnMax(body.overpassOnMax);
       setOverpassOffMax(body.overpassOffMax);
       setOverpassOffAverage(body.overpassOffAverage);
-    }
+    //}
   };
 
   const genDataDonutChart = (body) => {
@@ -195,6 +239,7 @@ const Dashboard = () => {
 
   return (
     <>
+    
       <h3 className="mb-4">แผงงานวิเคราะห์ข้อมูล</h3>
       <CRow>
         <CCol xs="12" sm="6" md="3">
@@ -317,14 +362,14 @@ const Dashboard = () => {
                       <CTabPane data-tab="home">
                         <CRow>
                           <CCol>
-                            <CChartBar
-                              datasets={graph}
-                              labels="months"
-                              options={{
-                                tooltips: {
-                                  enabled: true,
-                                },
-                              }}
+                          <Chart
+                              options={graphOptions.options}
+                              series={graphOptions.series}
+                              type="bar"
+                              width="100%"
+                              height='300px'
+                              yaxis={graphOptions.yaxis}
+                              
                             />
                           </CCol>
                         </CRow>
