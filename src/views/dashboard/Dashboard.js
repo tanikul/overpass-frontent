@@ -28,7 +28,6 @@ import {
   getDataOverpass,
 } from "src/services/DashboardService";
 import { COLOR_AMPHUR } from "../../config"
-import ApexCharts from 'apexcharts'
 import Chart from "react-apexcharts";
 
 const Dashboard = () => {
