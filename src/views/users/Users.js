@@ -111,7 +111,7 @@ const Users = () => {
     setDeleteModal(false);
   };
 
-  const handleReset = () => {
+  const handleReset = () => {console.log('xxxxxx')
     setUsername("");
     setFirstName("");
     setLastName("");
@@ -159,7 +159,6 @@ const Users = () => {
   const handleDeleteUser = () => {
     setDeleteLoading(true);
     deleteUser(accessToken, userId).then((response) => {
-      setUserId("");
       if (response.status === 200) {
         setDeleteLoading(false);
         MySwal.fire({
@@ -513,6 +512,7 @@ const Users = () => {
                 roles={roles}
                 statuses={statuses}
                 prefixes={prefixes}
+                handleReset={handleReset}
               />
               <CModal
                 centered

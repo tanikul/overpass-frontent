@@ -70,6 +70,7 @@ const Overpasses = () => {
   const [amphurs, setAmphurs] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [deleteOverpassName, setDeleteOverpassName] = useState("");
+  const [deleteId, setDeleteId] = useState("");
 
   const pageChange = (newPage) => {
     if (newPage - 1 >= 0 && page !== newPage - 1) {
@@ -93,25 +94,23 @@ const Overpasses = () => {
   };
 
   const handleClosedModal = () => {
-    //setUserId("");
-    //setUsername("");
     setDeleteModal(false);
   };
 
   const handleReset = () => {
+    console.log("xxxxx")
     setProvince("");
     setAmphur("");
     setDistrict("");
     setName("");
   };
 
-  const handleSearch = (e, reload = false) => {
+  const handleSearch = (reload = false) => {
     setLoading(true);
     let body = {
       page,
       limit: itemsPerPage,
       filter: {
-        id: reload ? prevUsername : id,
         name,
         location,
         district,
@@ -137,7 +136,7 @@ const Overpasses = () => {
     });
   };
 
-  const handleDeleteOverpass = (e) => {
+  const handleDeleteOverpass = () => {
     setDeleteLoading(true);
     deleteOverpass(accessToken, id).then((response) => {
       if (response.status === 200) {
@@ -148,7 +147,7 @@ const Overpasses = () => {
           icon: "success",
           didClose: () => {
             setDeleteModal(false);
-            handleSearch(e, true);
+            handleSearch(true);
           },
         });
       } else {
@@ -417,6 +416,13 @@ const Overpasses = () => {
                       </CButtonGroup>
                     </td>
                   ),
+                  districtName: (item) => (
+                      <td>{(item.districtName === null || item.districtName === 'null') ? "" : item.districtName}</td>
+                  ),
+                  location: (item) => (
+                    <td>{(item.location === null || item.location === 'null') ? "" : item.location}</td>
+                )
+  
                 }}
                 sorter
                 sorterValue={sorterValue}
@@ -458,6 +464,7 @@ const Overpasses = () => {
                 amphurs={[]}
                 districts={[]}
                 statuses={statuses}
+                handleReset={handleReset}
               />
               <CModal
                 centered
@@ -495,7 +502,7 @@ const Overpasses = () => {
                   </CButton>
                   <CButton
                     color="danger"
-                    onClick={handleDeleteOverpass}
+                    onClick={() => {handleDeleteOverpass()}}
                     disabled={deleteLoading}
                   >
                     Confirm

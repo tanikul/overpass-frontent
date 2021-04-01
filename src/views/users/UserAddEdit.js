@@ -39,6 +39,7 @@ const UserAddEdit = (props) => {
     roles,
     statuses,
     prefixes,
+    handleReset,
   } = props;
   const formikRef = useRef();
   const isAuth = useSelector((state) => state.authen.isAuth);
@@ -72,10 +73,6 @@ const UserAddEdit = (props) => {
       schema = {...schema, status: Yup.string().required("Status is required!"),}
     }
     return Yup.object().shape(schema);
-  };
-
-  const handleCloseEditModal = () => {
-    setModal(false);
   };
 
   const handleCloseAddModal = (e, handleReset) => {
@@ -118,6 +115,7 @@ const UserAddEdit = (props) => {
       editUser(accessToken, body)
       .then((response) => {
         if (response.status === 200) {
+          //handleReset();
           setLoading(false);
           MySwal.fire({
             title: "Success",
@@ -148,6 +146,7 @@ const UserAddEdit = (props) => {
       addUser(accessToken, body)
       .then((response) => {
         if (response.status === 200) {
+          //handleReset();
           setLoading(false);
           MySwal.fire({
             title: "Success",

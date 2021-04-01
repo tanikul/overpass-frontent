@@ -55,7 +55,6 @@ const MappingForms = ({ match, history }) => {
   const selectAmphurRef = useRef();
   const selectDistrictRef = useRef();
   const checkallOverpass = useRef();
-  const [setLoading] = useState(true);
   const [disableDraft, setDisableDraft] = useState(true);
   const [disableConfirm, setDisableConfirm] = useState(true);
   const multiselectRef = React.createRef();
@@ -89,7 +88,6 @@ const MappingForms = ({ match, history }) => {
       insertMappingOverpasses(accessToken, body)
         .then((response) => {
           if (response.status === 200) {
-            setLoading(false);
             MySwal.fire({
               title: "Success",
               text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
@@ -99,7 +97,6 @@ const MappingForms = ({ match, history }) => {
               },
             });
           } else {
-            setLoading(false);
             MySwal.fire({
               title: "Failed",
               text: response.data,
@@ -113,7 +110,6 @@ const MappingForms = ({ match, history }) => {
       updateMappingOverpasses(accessToken, body)
         .then((response) => {
           if (response.status === 200) {
-            setLoading(false);
             MySwal.fire({
               title: "Success",
               text: "Mapping กลุ่มสะพานลอยสำเร็จ  ",
@@ -123,7 +119,6 @@ const MappingForms = ({ match, history }) => {
               },
             });
           } else {
-            setLoading(false);
             MySwal.fire({
               title: "Failed",
               text: response.data,

@@ -34,9 +34,10 @@ const OverpassAddEdit = (props) => {
     itemDetail,
     reloadData,
     provinces,
-    statuses
+    statuses,
+    handleReset
   } = props;
-console.log(props);
+
   const formikRef = useRef();
   const isEdit = action === "add" ? false : true;
   const accessToken = useSelector((state) => state.authen.access_token);
@@ -122,6 +123,7 @@ console.log(props);
     if(isEdit){
       editOverpass(accessToken, body)
       .then((response) => {
+        handleReset();
         if (response.status === 200) {
           setLoading(false);
           MySwal.fire({
@@ -153,6 +155,7 @@ console.log(props);
       addOverpass(accessToken, body)
       .then((response) => {
         if (response.status === 200) {
+          handleReset();
           setLoading(false);
           MySwal.fire({
             title: "Success",

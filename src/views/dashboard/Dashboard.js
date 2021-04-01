@@ -434,7 +434,7 @@ const Dashboard = () => {
                 อุปกรณ์ไฟฟ้าเสียร้อยละ
               </span>
               <span style={{marginLeft:"1.5em"}}>{overpassOffAverage}</span>
-              <span className="float-right">  จุด</span>
+              <span className="float-right">  </span>
             </CListGroupItem>
             {/*<CListGroupItem>
               <span className="float-left">

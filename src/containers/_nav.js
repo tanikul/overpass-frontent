@@ -40,6 +40,13 @@ const _nav = [
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
   {
+    _tag: "CSidebarNavItem",
+    name: "ตั้งค่าหลอดไฟ",
+    to: "/light-bulb",
+    icon: "cil-lightbulb",
+    roles: ['SUPER_ADMIN', 'ADMIN']
+  },
+  {
     _tag: 'CSidebarNavItem',
     name: 'จัดการสะพานลอย',
     to: '/overpass',
@@ -60,13 +67,7 @@ const _nav = [
     icon: "cil-people",
     roles: ['SUPER_ADMIN', 'ADMIN']
   },
-  {
-    _tag: "CSidebarNavItem",
-    name: "ตั้งค่าหลอดไฟ",
-    to: "/light-bulb",
-    icon: "cil-lightbulb",
-    roles: ['SUPER_ADMIN', 'ADMIN']
-  },
+  
   /*{
     _tag: "CSidebarNavItem",
     name: "จับกลุมผู้ใช้งานระบบ",
