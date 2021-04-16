@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CButton,
@@ -29,7 +29,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const authen = useSelector((state) => state.authen, shallowEqual);
   const redirectTo = useSelector((state) => state.redirect.redirectTo);
-  const errorMsg = authen && authen.error && authen.error.message;
+  const [errorMsg, setErrorMsg] = useState(authen && authen.error && authen.error.message);
 
   const validationSchema = () => {
     return Yup.object().shape({
@@ -62,7 +62,11 @@ const Login = () => {
 
   const onSubmit = (values, { setSubmitting }) => {
     const { userName, password, rememberMe } = values;
-    dispatch(requestLogin(userName, password, rememberMe));
+    const rs = dispatch(requestLogin(userName, password, rememberMe)).then(data => {
+      if(data !== undefined && data.status === 401){
+        setErrorMsg("username หรือ password ไม่ถูกต้อง")
+      }
+    });
     setSubmitting(false);
   };
 

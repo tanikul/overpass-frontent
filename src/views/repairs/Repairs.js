@@ -34,8 +34,6 @@ const Repairs = () => {
     const limit = 20;
 
     const handleChange = (event, value) => {
-        console.log(event);
-        console.log(value);
         setPage(value);
         setupData(value);
     };

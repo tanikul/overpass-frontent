@@ -9,6 +9,7 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
       type: LOGIN_ERROR,
       payload: err.response.data,
     });
+    return err.response;
   });
 
   if (response && response.data.access_token) {
@@ -21,7 +22,7 @@ const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
     const overpassGroup = JSON.parse(atob(accessToken.split(".")[1])).overpassGroup;
     const name = JSON.parse(atob(accessToken.split(".")[1])).name;
     const imageProfile = (JSON.parse(atob(accessToken.split(".")[1])).imageProfile === undefined) ? "" : JSON.parse(atob(accessToken.split(".")[1])).imageProfile;
-console.log(imageProfile);
+
     dispatch({
       type: LOGIN_SUCCESS,
       payload: {
@@ -49,6 +50,8 @@ console.log(imageProfile);
       }
     
     dispatch(redirect("/dashboard"));
+  }else{
+    return response;
   }
 };
 
