@@ -8,7 +8,21 @@ const API_URL = PROD_API_URL;
 // process.env.NODE_ENV !== "development" ? PROD_API_URL : MOCK_API_URL;
 
 export const post = (path, body = {}, headers) => {
-  return axios.post(`${PROD_API_URL}/${path}`, body, { headers });
+  return axios({
+    method: 'post',
+    responseType: 'json',
+    url: `${PROD_API_URL}/${path}`,
+    data: body,
+    headers
+  })
+   .then(response => {
+    console.log(response);
+     return response;
+   })
+   .catch(error => {
+     console.log(error);
+   });
+  //return axios.post(`${PROD_API_URL}/${path}`, body, { headers });
 };
 
 export const get = (path, query = "", headers) => {
