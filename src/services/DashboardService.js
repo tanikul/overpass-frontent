@@ -13,7 +13,11 @@ export const getDataOverpass = async (token) => {
       );
       return request;
     } catch (err) {
-      return err.response.data;
+      console.log(err);
+      if(err.response['data']){
+        return err.response.data;
+      }
+      return err.response;
     }
 };
 
