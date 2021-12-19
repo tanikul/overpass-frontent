@@ -29,6 +29,9 @@ import {
 } from "src/services/DashboardService";
 import { COLOR_AMPHUR } from "../../config"
 import Chart from "react-apexcharts";
+import { useDispatch } from "react-redux";
+import { setLoginExpired } from "../../actions/authen";
+import { redirect } from "../../actions/redirect";
 
 const Dashboard = () => {
   const accessToken = useSelector((state) => state.authen.access_token);
@@ -43,7 +46,8 @@ const Dashboard = () => {
   const [overpassOffAverage, setOverpassOffAverage] = useState(0);
   const [graphOptions, setGraphOptions] = useState({options: {}, series: []});
   const [graphSeries, setGraphSeries] = useState([]);
-
+  const dispatch = useDispatch();
+  
   const genDataSets = (body) => {
     let data = [];
     let max = 0;
@@ -199,14 +203,18 @@ const Dashboard = () => {
     }
     
   }
-
+  
   useEffect(() => {
-    getDataOverpass(accessToken).then(({ status, data }) => {
-      if(status === 200){
-        setOverpassData(data);
-        genDataSets(data);  
-        genDataDonutChart(data);
+    getDataOverpass(accessToken).then(({ data }) => {
+      if(data.code && data.code === '9999'){
+        dispatch(redirect("/"));
+        dispatch(setLoginExpired());
       }
+      setOverpassData(data);
+      genDataSets(data);  
+      genDataDonutChart(data);
+    }).catch(err => {
+      console.log(err);
     });
 
     var thisheaders = {

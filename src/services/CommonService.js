@@ -1,6 +1,10 @@
 import axios from "axios";
 import { LOCALE, PROD_API_URL, MOCK_API_URL } from "../config";
-import ls from 'local-storage'
+import ls from 'local-storage';
+import { setLoginExpired } from '../actions/authen';
+import { redirect } from "../actions/redirect";
+
+import { useDispatch } from "react-redux";
 
 axios.defaults.headers.common["Accept-Language"] = LOCALE;
 
@@ -8,26 +12,37 @@ const API_URL = PROD_API_URL;
 // process.env.NODE_ENV !== "development" ? PROD_API_URL : MOCK_API_URL;
 
 export const post = (path, body = {}, headers) => {
-  return axios({
-    method: 'post',
-    responseType: 'json',
-    url: `${PROD_API_URL}/${path}`,
-    data: body,
-    headers
-  })
-   .then(response => {
-    console.log(response);
-     return response;
-   })
-   .catch(error => {
-     console.log(error);
-   });
-  //return axios.post(`${PROD_API_URL}/${path}`, body, { headers });
+  
+    return axios({
+      method: 'post',
+      responseType: 'json',
+      url: `${PROD_API_URL}/${path}`,
+      data: body,
+      headers
+    })
+    .then(response => {
+      return response;
+    })
+    .catch(error => {
+      if(error.response.status === 401){
+        localStorage.clear();
+      }
+      console.log(error.response);
+      return error.response;
+    });
 };
 
 export const get = (path, query = "", headers) => {
   return axios.get(`${API_URL}/${path}${query !== "" ? `?${query}` : ""}`, {
     headers,
+  }).then(response => {
+     return response;
+   }).catch(error =>{
+    if(error.response.status === 401){
+      localStorage.clear();
+    }
+    console.log(error.response);
+    return error.response;
   });
 };
 
@@ -39,6 +54,7 @@ export const getRoles = async (token) => {
     const response = await get("api/master/role", "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -51,6 +67,7 @@ export const getStatuses = async (token) => {
     const response = await get("api/master/status", "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -63,6 +80,7 @@ export const getPrefixes = async (token) => {
     const response = await get("api/master/prefix", "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -75,6 +93,7 @@ export const getOrganizations = async (token) => {
     const response = await get("api/master/organization", "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -87,6 +106,7 @@ export const getDistricts = async (token, amphurId) => {
     const response = await get("api/master/district?amphurId=" + amphurId, "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -99,6 +119,7 @@ export const getAmphurs = async (token, provinceId) => {
     const response = await get("api/master/amphur?provinceId=" + provinceId, "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -111,6 +132,7 @@ export const getProvinces = async (token) => {
     const response = await get("api/master/province", "", headers);
     return response;
   } catch (err) {
+    console.log(err.response);
     return err.response;
   }
 };
@@ -125,6 +147,7 @@ export const getMappingAddress = async (token) => {
       ls.set("address", response.data);
       return response;
     } catch (err) {
+      console.log(err.response);
       return err.response;
     }
   }else{

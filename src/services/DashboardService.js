@@ -6,19 +6,12 @@ export const getDataOverpass = async (token) => {
       Authorization: `Bearer ${token}`,
     };
   
-    try {
       const request = await get(
         "api/dashboard/getDataOverpass", "",
         headers
       );
       return request;
-    } catch (err) {
-      console.log(err);
-      if(err.response['data']){
-        return err.response.data;
-      }
-      return err.response;
-    }
+    
 };
 
 
