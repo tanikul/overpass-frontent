@@ -4,6 +4,7 @@ import { redirect } from "./redirect";
 import { messaging, subscribeTokenToTopic } from "../init-fcm";
 
 const requestLogin = (userName, password, isRememberMe) => async (dispatch) => {
+  localStorage.clear();
   const response = await signIn(userName, password).catch((err) => {
     dispatch({
       type: LOGIN_ERROR,
